@@ -1,9 +1,13 @@
 ﻿# Assignment 1 Final Report (Advanced QA)
 
-**Course:** Advanced QA  
+**Course:** Advanced Quality Assurance  
+**Instructor:** Aigul Adamova  
 **Assignment:** Assignment 1 (Week 2)  
 **Date:** 2026-03-22  
 **System Under Test:** Rocket.Chat (self-hosted web application)
+**Student:** Meirambek Yaki  
+**Team Members:** Aldiyar Sagidolla, Nurzhan Serikbekov  
+**Group:** CSE-2505M
 
 ## Executive Summary
 
@@ -162,6 +166,36 @@ Located in `screenshots/`:
 - `newman.log`
 - `newman.png`
 - `playwright-report.png`
+
+### 4.5 Embedded Screenshot Evidence
+
+#### Docker Services Running
+
+![Docker Compose Status](../screenshots/docker-compose-ps.png)
+
+#### Rocket.Chat Login Page
+
+![Rocket.Chat Login Page](../screenshots/login-page.png)
+
+#### Rocket.Chat Home Page After Login
+
+![Rocket.Chat Home Page](../screenshots/home-page.png)
+
+#### API Test Results (Jest)
+
+![API Tests](../screenshots/api-tests.png)
+
+#### E2E Test Results (Playwright)
+
+![E2E Tests](../screenshots/e2e-tests.png)
+
+#### Postman/Newman Results
+
+![Newman Results](../screenshots/newman.png)
+
+#### Playwright HTML Report
+
+![Playwright Report](../screenshots/playwright-report.png)
 
 ---
 
