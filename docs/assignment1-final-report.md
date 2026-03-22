@@ -2,11 +2,8 @@
 
 **Course:** Advanced Quality Assurance  
 **Instructor:** Aigul Adamova  
-**Assignment:** Assignment 1 (Week 2)  
-**Date:** 2026-03-22  
 **System Under Test:** Rocket.Chat (self-hosted web application)
-**Student:** Meirambek Yaki  
-**Team Members:** Aldiyar Sagidolla, Nurzhan Serikbekov  
+**Team Members:** Meirambek Yaki, Aldiyar Sagidolla, Nurzhan Serikbekov  
 **Group:** CSE-2505M
 
 ## Executive Summary
