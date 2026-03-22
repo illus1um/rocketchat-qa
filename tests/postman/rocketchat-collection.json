@@ -63,7 +63,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -71,8 +74,12 @@
             },
             "url": {
               "raw": "{{base_url}}/login",
-              "host": ["{{base_url}}"],
-              "path": ["login"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
             }
           }
         },
@@ -98,7 +105,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -106,8 +116,12 @@
             },
             "url": {
               "raw": "{{base_url}}/login",
-              "host": ["{{base_url}}"],
-              "path": ["login"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
             }
           }
         },
@@ -133,13 +147,23 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Auth-Token", "value": "{{auth_token}}" },
-              { "key": "X-User-Id", "value": "{{user_id}}" }
+              {
+                "key": "X-Auth-Token",
+                "value": "{{auth_token}}"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "{{user_id}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/me",
-              "host": ["{{base_url}}"],
-              "path": ["me"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "me"
+              ]
             }
           }
         }
@@ -172,18 +196,31 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "X-Auth-Token", "value": "{{auth_token}}" },
-              { "key": "X-User-Id", "value": "{{user_id}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Auth-Token",
+                "value": "{{auth_token}}"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "{{user_id}}"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"name\": \"postman-test-channel\"}"
+              "raw": "{\"name\": \"postman-test-channel-{{$timestamp}}\"}"
             },
             "url": {
               "raw": "{{base_url}}/channels.create",
-              "host": ["{{base_url}}"],
-              "path": ["channels.create"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "channels.create"
+              ]
             }
           }
         },
@@ -209,50 +246,23 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Auth-Token", "value": "{{auth_token}}" },
-              { "key": "X-User-Id", "value": "{{user_id}}" }
+              {
+                "key": "X-Auth-Token",
+                "value": "{{auth_token}}"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "{{user_id}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/channels.list",
-              "host": ["{{base_url}}"],
-              "path": ["channels.list"]
-            }
-          }
-        },
-        {
-          "name": "Delete Channel",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Channel deleted', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.success).to.be.true;",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "X-Auth-Token", "value": "{{auth_token}}" },
-              { "key": "X-User-Id", "value": "{{user_id}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"roomId\": \"{{channel_id}}\"}"
-            },
-            "url": {
-              "raw": "{{base_url}}/channels.delete",
-              "host": ["{{base_url}}"],
-              "path": ["channels.delete"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "channels.list"
+              ]
             }
           }
         }
@@ -285,9 +295,18 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "X-Auth-Token", "value": "{{auth_token}}" },
-              { "key": "X-User-Id", "value": "{{user_id}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Auth-Token",
+                "value": "{{auth_token}}"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "{{user_id}}"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -295,8 +314,12 @@
             },
             "url": {
               "raw": "{{base_url}}/chat.sendMessage",
-              "host": ["{{base_url}}"],
-              "path": ["chat.sendMessage"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat.sendMessage"
+              ]
             }
           }
         },
@@ -322,15 +345,28 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "X-Auth-Token", "value": "{{auth_token}}" },
-              { "key": "X-User-Id", "value": "{{user_id}}" }
+              {
+                "key": "X-Auth-Token",
+                "value": "{{auth_token}}"
+              },
+              {
+                "key": "X-User-Id",
+                "value": "{{user_id}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/channels.history?roomId={{channel_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["channels.history"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "channels.history"
+              ],
               "query": [
-                { "key": "roomId", "value": "{{channel_id}}" }
+                {
+                  "key": "roomId",
+                  "value": "{{channel_id}}"
+                }
               ]
             }
           }

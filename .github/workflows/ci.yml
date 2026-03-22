@@ -13,7 +13,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:6
+        image: mongo:8
         ports:
           - 27017:27017
         options: >-
@@ -47,7 +47,7 @@ jobs:
       - name: Wait for Rocket.Chat to be ready
         run: |
           echo "Waiting for Rocket.Chat to start..."
-          timeout 180 bash -c 'until curl -sf http://localhost:3000/api/v1/info; do echo "Waiting..."; sleep 5; done'
+          timeout 180 bash -c 'until curl -sf http://localhost:3000/api/info; do echo "Waiting..."; sleep 5; done'
           echo "Rocket.Chat is ready!"
 
       - name: Install dependencies
@@ -75,7 +75,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:6
+        image: mongo:8
         ports:
           - 27017:27017
         options: >-
@@ -109,7 +109,7 @@ jobs:
       - name: Wait for Rocket.Chat to be ready
         run: |
           echo "Waiting for Rocket.Chat to start..."
-          timeout 180 bash -c 'until curl -sf http://localhost:3000/api/v1/info; do echo "Waiting..."; sleep 5; done'
+          timeout 180 bash -c 'until curl -sf http://localhost:3000/api/info; do echo "Waiting..."; sleep 5; done'
           echo "Rocket.Chat is ready!"
 
       - name: Install dependencies

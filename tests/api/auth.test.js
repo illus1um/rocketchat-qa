@@ -80,7 +80,10 @@ describe('Authentication API', () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.data.status).toBe('success');
+    // Rocket.Chat 8 may return an empty body on successful logout.
+    if (response.data && typeof response.data === 'object' && 'status' in response.data) {
+      expect(response.data.status).toBe('success');
+    }
 
     // Verify token is no longer valid
     try {

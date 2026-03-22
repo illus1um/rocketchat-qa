@@ -11,10 +11,23 @@ Advanced QA — Assignment 1: Risk Assessment & QA Environment Setup
 ### 1. Start Rocket.Chat
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
-Wait ~90 seconds for Rocket.Chat to fully boot, then access it at http://localhost:3000.
+Wait ~90-180 seconds for Rocket.Chat to fully boot, then access it at http://localhost:3000.
+
+Health-check endpoint:
+
+```bash
+curl http://localhost:3000/api/info
+```
+
+If `localhost:3000` is not opening:
+
+```bash
+docker compose ps
+docker compose logs --tail=200 rocketchat
+```
 
 ### 2. Install Dependencies
 
