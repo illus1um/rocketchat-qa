@@ -1,0 +1,132 @@
+name: Rocket.Chat QA Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  api-tests:
+    name: API Tests (Jest + Newman)
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ping:1})'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Initialize MongoDB Replica Set
+        run: |
+          mongosh --host localhost:27017 --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "localhost:27017"}]})'
+
+      - name: Start Rocket.Chat
+        run: |
+          docker run -d --name rocketchat \
+            --network host \
+            -e MONGO_URL=mongodb://localhost:27017/rocketchat?replicaSet=rs0 \
+            -e MONGO_OPLOG_URL=mongodb://localhost:27017/local?replicaSet=rs0 \
+            -e ROOT_URL=http://localhost:3000 \
+            -e PORT=3000 \
+            registry.rocket.chat/rocketchat/rocket.chat:latest
+
+      - name: Wait for Rocket.Chat to be ready
+        run: |
+          echo "Waiting for Rocket.Chat to start..."
+          timeout 180 bash -c 'until curl -sf http://localhost:3000/api/v1/info; do echo "Waiting..."; sleep 5; done'
+          echo "Rocket.Chat is ready!"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run API tests
+        run: npx jest tests/api/ --verbose
+        env:
+          ROCKETCHAT_URL: http://localhost:3000
+
+      - name: Run Postman/Newman tests
+        run: npx newman run tests/postman/rocketchat-collection.json --reporters cli,json --reporter-json-export newman-results.json
+        continue-on-error: true
+
+      - name: Upload Newman results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-results
+          path: newman-results.json
+
+  e2e-tests:
+    name: E2E Tests (Playwright)
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ping:1})'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Initialize MongoDB Replica Set
+        run: |
+          mongosh --host localhost:27017 --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "localhost:27017"}]})'
+
+      - name: Start Rocket.Chat
+        run: |
+          docker run -d --name rocketchat \
+            --network host \
+            -e MONGO_URL=mongodb://localhost:27017/rocketchat?replicaSet=rs0 \
+            -e MONGO_OPLOG_URL=mongodb://localhost:27017/local?replicaSet=rs0 \
+            -e ROOT_URL=http://localhost:3000 \
+            -e PORT=3000 \
+            registry.rocket.chat/rocketchat/rocket.chat:latest
+
+      - name: Wait for Rocket.Chat to be ready
+        run: |
+          echo "Waiting for Rocket.Chat to start..."
+          timeout 180 bash -c 'until curl -sf http://localhost:3000/api/v1/info; do echo "Waiting..."; sleep 5; done'
+          echo "Rocket.Chat is ready!"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npx playwright test
+        env:
+          ROCKETCHAT_URL: http://localhost:3000
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

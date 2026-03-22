@@ -1,0 +1,73 @@
+Assignment 1
+Deadline: Week 2
+Objective:
+● Introduce students to the QA landscape and planning testing activities based on risk.
+● Set up a QA environment with appropriate tools, frameworks, and CI/CD pipelines.
+● Begin collecting data and documenting processes that will feed into the final
+research paper/project.
+Learning Goals:
+1. Understand QA vs QC and the role of QA in Agile/DevOps.
+2. Identify high-risk areas in software systems and prioritize testing.
+3. Set up a functional QA environment (tools, repositories, pipelines).
+4. Document test strategy and risk assessment, forming the first draft of the research
+paper.
+Suggested Systems for Testing
+Students are divided into teams (maximum 3 person, they should be from the same group).
+They can choose one system from the options below (the system should be already
+developed and be able to be run), depending on their interest and available resources:
+1. Web Application
+○ Example: Online e-commerce store, university course registration portal,
+blogging platform.
+○ Focus areas: User authentication, checkout/payment workflow, search/filter
+functionality, API endpoints.
+2. Microservices / API System
+○ Example: REST/GraphQL API for a ticketing system, backend of a travel
+booking platform.
+○ Focus areas: API endpoints, data validation, contract testing, service
+integration.
+3. Desktop Application
+○ Example: note-taking app, file manager.
+○ Focus areas: Core functions, file operations, error handling.
+Students should select a system that is complex enough to allow risk-based prioritization,
+but manageable within two weeks.
+Assignment Tasks
+1. Risk Assessment & Strategy Planning:
+○ Analyze the chosen system.
+○ Identify critical components or modules that could have the most severe
+impact if they fail.
+○ Prioritize testing based on risk probability vs impact.
+○ Document assumptions and reasoning.
+2. QA Environment Setup:
+○ Install and configure testing tools (e.g., Selenium, Playwright, Postman,
+JMeter).
+○ Set up test repository (GitHub/GitLab) and version control.
+○ Create a basic CI/CD test pipeline.
+3. Initial Test Strategy Documentation:
+○ Include:
+■ Project scope and objectives.
+■ Risk assessment results (modules prioritized by risk).
+■ Test approach (manual vs automated, high-risk areas first).
+■ Tool selection and configuration.
+■ Planned metrics to measure test coverage or effectiveness.
+4. Baseline Metrics for Research Paper:
+○ Count of high-risk modules.
+○ Initial coverage plan.
+○ Estimated testing effort.
+Connection to Final Research Paper:
+What to capture for the paper:
+● System description: Include a brief overview of the system chosen.
+● Risk assessment methodology: Document reasoning, assumptions, and
+prioritization.
+● Environment setup: Tools, CI/CD configuration, test repository structure.
+● Initial metrics: These become the baseline for performance, coverage, or defect
+reduction analysis.
+How it builds toward the final project:
+● Forms the Introduction and Methodology chapters in the research paper.
+● Later assignments (automation, experimental testing, synthesis) expand on this
+foundation.
+● Screenshots, configurations, and initial scripts provide reproducibility evidence.
+Deliverables:
+1. Risk Assessment Document (prioritized components/modules).
+2. QA Test Strategy Document (scope, approach, tools, planned automation).
+3. QA Environment Setup Report (installed tools, pipelines, repository structure).
+4. Baseline metrics and screenshots for research purposes.
