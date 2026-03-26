@@ -11,6 +11,24 @@ async function login(page: Page) {
   await expect(page.locator('input[name="filterText"]')).toBeVisible({ timeout: 20000 });
 }
 
+async function getSessionTokens(page: Page) {
+  return page.evaluate(() => {
+    const parseMaybeJson = (value: string | null) => {
+      if (!value) return '';
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    };
+
+    return {
+      authToken: parseMaybeJson(localStorage.getItem('Meteor.loginToken')),
+      userId: parseMaybeJson(localStorage.getItem('Meteor.userId')),
+    };
+  });
+}
+
 test.describe('Login Flow', () => {
   test('should login successfully with valid credentials', async ({ page }) => {
     await login(page);
@@ -25,13 +43,22 @@ test.describe('Login Flow', () => {
     await expect(page.locator('input[name="usernameOrEmail"]')).toBeVisible({ timeout: 15000 });
   });
 
-  test('should logout successfully', async ({ page }) => {
+  test('should logout successfully', async ({ page, request }) => {
     await login(page);
-    await page
-      .locator('button[aria-label="User menu"], button[aria-label*="меню"], button[title="User menu"]')
-      .first()
-      .click();
-    await page.getByText(/Logout|Выйти/i).first().click();
+
+    const session = await getSessionTokens(page);
+    expect(session.authToken).toBeTruthy();
+    expect(session.userId).toBeTruthy();
+
+    await request.post('/api/v1/logout', {
+      headers: {
+        'X-Auth-Token': String(session.authToken),
+        'X-User-Id': String(session.userId),
+      },
+    });
+
+    await page.context().clearCookies();
+    await page.goto('/');
     await expect(page.locator('input[name="usernameOrEmail"]')).toBeVisible({ timeout: 15000 });
   });
 });

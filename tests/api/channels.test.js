@@ -46,6 +46,9 @@ describe('Channels API', () => {
   test('GET /channels.list - should return list of channels', async () => {
     const response = await axios.get(`${API}/channels.list`, {
       headers: authHeaders(),
+      params: {
+        count: 0,
+      },
     });
 
     expect(response.status).toBe(200);

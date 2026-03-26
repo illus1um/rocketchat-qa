@@ -5,7 +5,7 @@
   "scripts": {
     "test:api": "jest tests/api/ --verbose",
     "test:e2e": "playwright test",
-    "test:postman": "newman run tests/postman/rocketchat-collection.json",
+    "test:postman": "node tests/postman/run-newman.js",
     "test": "npm run test:api && npm run test:e2e"
   },
   "devDependencies": {
