@@ -1,81 +1,64 @@
-# Rocket.Chat QA Test Suite
+# Assignment 2 UI Automation Suite
 
-Advanced QA — Assignment 1: Risk Assessment & QA Environment Setup
+Practice assignment repository for browser automation scenarios:
 
-## System Under Test
+1. Search functionality
+2. Login and logout functionality
+3. Flight booking with a title checkpoint
 
-[Rocket.Chat](https://rocket.chat) — Open-source communications platform (self-hosted via Docker).
-
-## Quick Start
-
-### 1. Start Rocket.Chat
-
-```bash
-docker compose up -d
-```
-
-Wait ~90-180 seconds for Rocket.Chat to fully boot, then access it at http://localhost:3000.
-
-Health-check endpoint:
-
-```bash
-curl http://localhost:3000/api/info
-```
-
-If `localhost:3000` is not opening:
-
-```bash
-docker compose ps
-docker compose logs --tail=200 rocketchat
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-npx playwright install --with-deps chromium firefox
-```
-
-### 3. Run Tests
-
-```bash
-# API tests
-npm run test:api
-
-# E2E tests
-npm run test:e2e
-
-# Postman collection
-npm run test:postman
-```
+The project uses Playwright and local demo web pages stored in this repository so the tests stay stable and pass both locally and in GitHub Actions.
 
 ## Project Structure
 
-```
-├── docs/                        # Deliverable documents
-│   ├── risk-assessment.md       # Risk assessment (Deliverable 1)
-│   ├── test-strategy.md         # Test strategy (Deliverable 2)
-│   ├── environment-setup-report.md  # Setup report (Deliverable 3)
-│   └── baseline-metrics.md      # Baseline metrics (Deliverable 4)
-├── tests/
-│   ├── api/                     # Jest API tests
-│   ├── e2e/                     # Playwright E2E tests
-│   ├── performance/             # JMeter load tests
-│   └── postman/                 # Postman collection
-├── screenshots/                 # Evidence screenshots
-├── docker-compose.yml           # Rocket.Chat + MongoDB
-├── playwright.config.ts         # Playwright configuration
-├── jest.config.js               # Jest configuration
-└── .github/workflows/ci.yml    # CI/CD pipeline
+```text
+demo-apps/
+  search/           Local search demo page
+  auth/             Local login/logout demo page
+  flights/          Local flight booking demo page
+docs/
+  assignment2-report.md
+  test-cases.md
+  locators-and-ci.md
+tests/assignment2/
+  assignment2.spec.ts
+.github/workflows/ci.yml
+playwright.config.ts
+package.json
 ```
 
-## Tools
+## Run Locally
 
-| Tool | Purpose |
-|------|---------|
-| Playwright | E2E browser testing |
-| Jest + Axios | REST API testing |
-| Postman / Newman | API collection testing |
-| JMeter | Performance / load testing |
-| Docker Compose | Test environment |
-| GitHub Actions | CI/CD pipeline |
+```bash
+npm ci
+npx playwright install --with-deps chromium
+npm test
+```
+
+To open the HTML report after a local run:
+
+```bash
+npx playwright show-report
+```
+
+## What Is Covered
+
+| Requirement | Status |
+|---|---|
+| Search functionality automation | Implemented |
+| Login and logout automation | Implemented |
+| Flight booking automation | Implemented |
+| CSS selectors | Implemented |
+| XPath selectors | Implemented |
+| GitHub CI | Implemented |
+
+## CI
+
+GitHub Actions workflow is available in `.github/workflows/ci.yml`.
+
+Current CI improvements:
+
+- Runs on `push`, `pull_request`, and manual `workflow_dispatch`
+- Cancels outdated in-progress runs for the same branch
+- Uploads Playwright HTML report
+- Uploads raw `test-results` artifacts with screenshots and traces
+- Uploads JUnit XML report for machine-readable test results
