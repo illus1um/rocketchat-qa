@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Demo Workspace</title>
+  <style>
+    :root {
+      --bg: #eff4ef;
+      --panel: #ffffff;
+      --ink: #18261d;
+      --accent: #2f7d57;
+      --warn: #b54040;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: "Trebuchet MS", Verdana, sans-serif;
+      background:
+        linear-gradient(145deg, rgba(47, 125, 87, 0.14), transparent 40%),
+        linear-gradient(180deg, #f5faf5 0%, #e8f0e8 100%);
+      color: var(--ink);
+      padding: 24px;
+    }
+
+    .card {
+      width: min(460px, 100%);
+      background: var(--panel);
+      border-radius: 24px;
+      border: 1px solid #d7e2d9;
+      box-shadow: 0 22px 60px rgba(24, 38, 29, 0.12);
+      padding: 32px;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    input,
+    button {
+      width: 100%;
+      font: inherit;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid #bfd0c3;
+    }
+
+    button {
+      margin-top: 18px;
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      cursor: pointer;
+    }
+
+    #error-message {
+      color: var(--warn);
+      min-height: 24px;
+      margin-top: 14px;
+    }
+
+    #dashboard {
+      display: none;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 12px;
+      background: #dff0e4;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+  </style>
+</head>
+<body>
+  <section class="card">
+    <div id="login-view">
+      <h1>Login Demo Workspace</h1>
+      <p>Use <strong>student</strong> / <strong>qa123</strong> to sign in.</p>
+
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" autocomplete="off">
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password">
+
+      <button id="login-button" type="button">Login</button>
+      <div id="error-message" role="alert"></div>
+    </div>
+
+    <div id="dashboard">
+      <span class="pill">Authenticated session</span>
+      <h2 id="welcome-title">Welcome, student</h2>
+      <p>You are now inside the demo workspace.</p>
+      <button id="logout-button" type="button">Logout</button>
+    </div>
+  </section>
+
+  <script>
+    const validUsername = 'student';
+    const validPassword = 'qa123';
+    const loginView = document.getElementById('login-view');
+    const dashboard = document.getElementById('dashboard');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const errorMessage = document.getElementById('error-message');
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+
+    function showDashboard() {
+      loginView.style.display = 'none';
+      dashboard.style.display = 'block';
+      errorMessage.textContent = '';
+      document.title = 'Dashboard | Login Demo Workspace';
+    }
+
+    function showLogin() {
+      dashboard.style.display = 'none';
+      loginView.style.display = 'block';
+      usernameInput.value = '';
+      passwordInput.value = '';
+      errorMessage.textContent = '';
+      document.title = 'Login Demo Workspace';
+    }
+
+    loginButton.addEventListener('click', () => {
+      if (!usernameInput.value || !passwordInput.value) {
+        errorMessage.textContent = 'Username and password are required.';
+        return;
+      }
+
+      if (usernameInput.value === validUsername && passwordInput.value === validPassword) {
+        showDashboard();
+        return;
+      }
+
+      errorMessage.textContent = 'Invalid username or password.';
+    });
+
+    usernameInput.addEventListener('input', () => {
+      errorMessage.textContent = '';
+    });
+
+    passwordInput.addEventListener('input', () => {
+      errorMessage.textContent = '';
+    });
+
+    logoutButton.addEventListener('click', showLogin);
+  </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyRoute Reservation Demo</title>
+  <style>
+    :root {
+      --ink: #10213a;
+      --sky: #dff1ff;
+      --panel: rgba(255, 255, 255, 0.9);
+      --accent: #0077b6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Gill Sans", "Segoe UI", sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.8), transparent 28%),
+        linear-gradient(180deg, #b8e2ff 0%, #edf8ff 100%);
+      padding: 24px;
+    }
+
+    .layout {
+      width: min(880px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border-radius: 28px;
+      box-shadow: 0 26px 70px rgba(16, 33, 58, 0.14);
+      padding: 32px;
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 2.5rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      font: inherit;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid #a8c8dc;
+    }
+
+    button {
+      margin-top: 18px;
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      cursor: pointer;
+    }
+
+    #confirmation {
+      display: none;
+      margin-top: 26px;
+      background: #eef8ff;
+      border: 1px solid #b9dff6;
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .route-chip {
+      display: inline-block;
+      background: #d8eefc;
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    #flight-error {
+      color: #b42318;
+      min-height: 24px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="layout">
+    <h1>SkyRoute Reservation Demo</h1>
+    <p>Book a demo flight and verify the confirmation title.</p>
+
+    <form id="flight-form">
+      <div class="grid">
+        <div>
+          <label for="from-city">From</label>
+          <select id="from-city" name="from">
+            <option>Almaty</option>
+            <option>Astana</option>
+            <option>Istanbul</option>
+          </select>
+        </div>
+        <div>
+          <label for="to-city">To</label>
+          <select id="to-city" name="to">
+            <option>Dubai</option>
+            <option>London</option>
+            <option>Seoul</option>
+          </select>
+        </div>
+        <div>
+          <label for="travel-date">Travel date</label>
+          <input id="travel-date" name="travelDate" type="date" value="2026-05-10">
+        </div>
+        <div>
+          <label for="passengers">Passengers</label>
+          <select id="passengers" name="passengers">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <label for="full-name">Passenger full name</label>
+        <input id="full-name" name="fullName" type="text" placeholder="Aldiyar Sagidolla">
+      </div>
+
+      <button id="book-flight" type="submit">Book Flight</button>
+      <div id="flight-error" role="alert"></div>
+    </form>
+
+    <section id="confirmation">
+      <span class="route-chip" id="route-chip"></span>
+      <h2 id="confirmation-title">Booking Confirmed</h2>
+      <p id="booking-reference"></p>
+      <p id="confirmation-text"></p>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('flight-form');
+    const confirmation = document.getElementById('confirmation');
+    const routeChip = document.getElementById('route-chip');
+    const bookingReference = document.getElementById('booking-reference');
+    const confirmationText = document.getElementById('confirmation-text');
+    const flightError = document.getElementById('flight-error');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const from = formData.get('from');
+      const to = formData.get('to');
+      const travelDate = formData.get('travelDate');
+      const passengers = formData.get('passengers');
+      const fullName = String(formData.get('fullName')).trim();
+
+      if (!fullName) {
+        flightError.textContent = 'Passenger full name is required.';
+        confirmation.style.display = 'none';
+        return;
+      }
+
+      flightError.textContent = '';
+      routeChip.textContent = `${from} -> ${to}`;
+      bookingReference.textContent = `Reference: SKY-${String(from).slice(0, 2).toUpperCase()}${String(to).slice(0, 2).toUpperCase()}-2026`;
+      confirmationText.textContent =
+        `${fullName} successfully booked ${passengers} seat(s) for ${travelDate}.`;
+      confirmation.style.display = 'block';
+      document.title = 'Booking Confirmed | SkyRoute Reservation Demo';
+    });
+  </script>
+</body>
+</html>

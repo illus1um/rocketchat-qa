@@ -1,0 +1,55 @@
+
+> rocketchat-qa@2.0.0 test
+> playwright test
+
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:42] "GET / HTTP/1.1" 200 -
+
+Running 18 tests using 1 worker
+
+(node:75708) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75708) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:44] "GET /demo-apps/search/ HTTP/1.1" 200 -
+  ✓   1 tests/assignment2/assignment2.spec.ts:40:9 › Assignment 2 UI automation › Search functionality › returns matching result when search is triggered by button (550ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:45] "GET /demo-apps/search/ HTTP/1.1" 200 -
+  ✓   2 tests/assignment2/assignment2.spec.ts:52:9 › Assignment 2 UI automation › Search functionality › supports Enter key search (151ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:45] "GET /demo-apps/search/ HTTP/1.1" 200 -
+  ✓   3 tests/assignment2/assignment2.spec.ts:62:9 › Assignment 2 UI automation › Search functionality › search is case-insensitive (218ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:45] "GET /demo-apps/search/ HTTP/1.1" 200 -
+  ✓   4 tests/assignment2/assignment2.spec.ts:72:9 › Assignment 2 UI automation › Search functionality › shows a no-results message for unknown keyword (203ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:45] "GET /demo-apps/search/ HTTP/1.1" 200 -
+  ✓   5 tests/assignment2/assignment2.spec.ts:82:9 › Assignment 2 UI automation › Search functionality › validates empty search request (197ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:46] "GET /demo-apps/search/ HTTP/1.1" 200 -
+  ✓   6 tests/assignment2/assignment2.spec.ts:91:9 › Assignment 2 UI automation › Search functionality › clear button resets search state (249ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:46] "GET /demo-apps/auth/ HTTP/1.1" 200 -
+  ✓   7 tests/assignment2/assignment2.spec.ts:105:9 › Assignment 2 UI automation › Login and logout functionality › logs in successfully with valid credentials (210ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:46] "GET /demo-apps/auth/ HTTP/1.1" 200 -
+  ✓   8 tests/assignment2/assignment2.spec.ts:115:9 › Assignment 2 UI automation › Login and logout functionality › shows validation message when fields are empty (184ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:46] "GET /demo-apps/auth/ HTTP/1.1" 200 -
+  ✓   9 tests/assignment2/assignment2.spec.ts:126:9 › Assignment 2 UI automation › Login and logout functionality › rejects invalid password (214ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:46] "GET /demo-apps/auth/ HTTP/1.1" 200 -
+  ✓  10 tests/assignment2/assignment2.spec.ts:137:9 › Assignment 2 UI automation › Login and logout functionality › clears error message after user edits fields (208ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:47] "GET /demo-apps/auth/ HTTP/1.1" 200 -
+  ✓  11 tests/assignment2/assignment2.spec.ts:148:9 › Assignment 2 UI automation › Login and logout functionality › logout returns user to login page (236ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:47] "GET /demo-apps/auth/ HTTP/1.1" 200 -
+  ✓  12 tests/assignment2/assignment2.spec.ts:159:9 › Assignment 2 UI automation › Login and logout functionality › supports relogin after logout (273ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:47] "GET /demo-apps/flights/ HTTP/1.1" 200 -
+  ✓  13 tests/assignment2/assignment2.spec.ts:172:9 › Assignment 2 UI automation › Flight booking functionality › completes reservation and shows confirmation title (237ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:47] "GET /demo-apps/flights/ HTTP/1.1" 200 -
+  ✓  14 tests/assignment2/assignment2.spec.ts:184:9 › Assignment 2 UI automation › Flight booking functionality › keeps default booking values visible before submit (152ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:48] "GET /demo-apps/flights/ HTTP/1.1" 200 -
+  ✓  15 tests/assignment2/assignment2.spec.ts:193:9 › Assignment 2 UI automation › Flight booking functionality › shows validation error when passenger name is missing (196ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:48] "GET /demo-apps/flights/ HTTP/1.1" 200 -
+  ✓  16 tests/assignment2/assignment2.spec.ts:203:9 › Assignment 2 UI automation › Flight booking functionality › creates confirmation for another route and passenger count (203ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:48] "GET /demo-apps/flights/ HTTP/1.1" 200 -
+  ✓  17 tests/assignment2/assignment2.spec.ts:221:9 › Assignment 2 UI automation › Flight booking functionality › shows generated booking reference after successful booking (225ms)
+[2m[WebServer] [22m::ffff:127.0.0.1 - - [04/Apr/2026 19:16:48] "GET /demo-apps/flights/ HTTP/1.1" 200 -
+  ✓  18 tests/assignment2/assignment2.spec.ts:236:9 › Assignment 2 UI automation › Flight booking functionality › hides previous validation error after successful booking (234ms)
+
+  18 passed (6.4s)
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report[39m
+[36m[39m

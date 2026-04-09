@@ -1,5 +1,9 @@
 node_modules/
+.venv/
 playwright-report/
 test-results/
 *.env
 .DS_Store
+
+# Generated docs/build artifacts
+docs/assignment2-final-report-embedded.html

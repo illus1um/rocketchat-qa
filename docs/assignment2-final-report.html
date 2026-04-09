@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Assignment 2: Test Automation Implementation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.4;
+      color: #1f2937;
+      margin: 28px;
+    }
+
+    h1, h2, h3 {
+      color: #133b67;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 22pt;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 15pt;
+      margin-top: 24px;
+    }
+
+    h3 {
+      font-size: 12.5pt;
+      margin-top: 18px;
+    }
+
+    p {
+      margin: 6px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 18px;
+    }
+
+    th, td {
+      border: 1px solid #7b8794;
+      padding: 6px 8px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #dce8f5;
+      font-weight: 700;
+    }
+
+    .meta td:first-child {
+      width: 190px;
+      font-weight: 700;
+      background: #eef4fb;
+    }
+
+    .image {
+      margin: 12px 0 20px;
+      text-align: center;
+    }
+
+    .image img {
+      max-width: 100%;
+      border: 1px solid #8aa2bc;
+    }
+
+    .caption {
+      font-size: 10pt;
+      color: #4b5563;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Assignment 2: Test Automation Implementation</h1>
+
+  <table class="meta">
+    <tr><td>Course</td><td>Advanced QA</td></tr>
+    <tr><td>Student</td><td>Aldiyar Sagidolla</td></tr>
+    <tr><td>Repository</td><td>rocketchat-qa</td></tr>
+    <tr><td>Selected system type</td><td>Web Application</td></tr>
+    <tr><td>Automation framework</td><td>Playwright</td></tr>
+    <tr><td>Execution date</td><td>2026-04-04</td></tr>
+    <tr><td>Current suite status</td><td>18 / 18 tests passed</td></tr>
+  </table>
+
+  <h2>Objective</h2>
+  <p>This assignment extends the practical QA work by implementing automated tests for high-risk web application flows, defining quality gates, integrating the suite into GitHub Actions, collecting basic execution metrics, and documenting reproducible evidence.</p>
+  <p>The implementation in this repository uses local demo applications to keep the test suite stable, deterministic, and easy to rerun during grading.</p>
+
+  <h2>1. Automated Test Implementation</h2>
+
+  <h3>Step 1: Identify Test Scope</h3>
+  <table>
+    <tr>
+      <th>Module/Feature</th>
+      <th>High-Risk Function</th>
+      <th>Test Priority (High/Medium/Low)</th>
+      <th>Notes/Expected Outcome</th>
+    </tr>
+    <tr><td>Search</td><td>Keyword search by button click</td><td>High</td><td>Must return relevant result card for matching query</td></tr>
+    <tr><td>Search</td><td>Search by Enter key</td><td>Medium</td><td>Must trigger same behavior as button-based search</td></tr>
+    <tr><td>Search</td><td>Validation for empty query</td><td>High</td><td>Must show validation message instead of fake results</td></tr>
+    <tr><td>Authentication</td><td>Valid login</td><td>High</td><td>Dashboard must open for correct credentials</td></tr>
+    <tr><td>Authentication</td><td>Invalid password handling</td><td>High</td><td>Must show error message and keep dashboard hidden</td></tr>
+    <tr><td>Authentication</td><td>Logout</td><td>High</td><td>Must return user to login view and reset state</td></tr>
+    <tr><td>Flight Booking</td><td>Successful reservation flow</td><td>High</td><td>Must show confirmation section and title checkpoint</td></tr>
+    <tr><td>Flight Booking</td><td>Passenger name validation</td><td>High</td><td>Booking must be blocked when required name is empty</td></tr>
+    <tr><td>Flight Booking</td><td>Alternative route booking</td><td>Medium</td><td>Must support different route and passenger count</td></tr>
+    <tr><td>Flight Booking</td><td>Booking reference generation</td><td>Medium</td><td>Confirmation must show generated booking reference</td></tr>
+  </table>
+
+  <h3>Step 2: Define Test Cases</h3>
+  <table>
+    <tr>
+      <th>Test Case ID</th>
+      <th>Module/Feature</th>
+      <th>Description</th>
+      <th>Input Data</th>
+      <th>Expected Result</th>
+      <th>Scenario Type</th>
+      <th>Notes</th>
+    </tr>
+    <tr><td>TC-01</td><td>Search</td><td>Valid search via button</td><td>Query: selenium</td><td>Matching result displayed</td><td>Positive</td><td>Uses CSS + XPath locators</td></tr>
+    <tr><td>TC-02</td><td>Search</td><td>Search via Enter key</td><td>Query: playwright</td><td>Search runs without button click</td><td>Positive</td><td>Keyboard interaction covered</td></tr>
+    <tr><td>TC-03</td><td>Search</td><td>Unknown search term</td><td>Query: mobile-app</td><td>No-results message displayed</td><td>Negative</td><td>Checks empty result set</td></tr>
+    <tr><td>TC-04</td><td>Search</td><td>Empty search validation</td><td>Empty query</td><td>Validation message displayed</td><td>Negative</td><td>Prevents false-positive result rendering</td></tr>
+    <tr><td>TC-05</td><td>Authentication</td><td>Valid login</td><td>student / qa123</td><td>Dashboard loads and title contains Dashboard</td><td>Positive</td><td>Core critical workflow</td></tr>
+    <tr><td>TC-06</td><td>Authentication</td><td>Invalid password</td><td>student / wrongpass</td><td>Error message displayed</td><td>Negative</td><td>Dashboard remains hidden</td></tr>
+    <tr><td>TC-07</td><td>Authentication</td><td>Required-fields validation</td><td>Empty username/password</td><td>Required-fields message displayed</td><td>Negative</td><td>Form validation scenario</td></tr>
+    <tr><td>TC-08</td><td>Authentication</td><td>Logout flow</td><td>Logged-in user session</td><td>User returns to login page</td><td>Positive</td><td>Session reset validated</td></tr>
+    <tr><td>TC-09</td><td>Flight Booking</td><td>Successful reservation</td><td>Almaty -> London, 2 passengers, valid name</td><td>Confirmation section and title shown</td><td>Positive</td><td>Main assignment workflow</td></tr>
+    <tr><td>TC-10</td><td>Flight Booking</td><td>Missing passenger name</td><td>Empty full name</td><td>Validation error shown, booking blocked</td><td>Negative</td><td>Required-field validation</td></tr>
+    <tr><td>TC-11</td><td>Flight Booking</td><td>Alternative route booking</td><td>Istanbul -> Seoul, 3 passengers</td><td>Confirmation reflects route and count</td><td>Positive</td><td>Data variation scenario</td></tr>
+    <tr><td>TC-12</td><td>Flight Booking</td><td>Booking reference generation</td><td>Astana -> Dubai, Dana QA</td><td>Reference shown in confirmation</td><td>Positive</td><td>Checks generated content</td></tr>
+  </table>
+
+  <h3>Step 3: Track Script Implementation</h3>
+  <table>
+    <tr>
+      <th>Script ID</th>
+      <th>Module/Feature</th>
+      <th>Automation Framework</th>
+      <th>Script Name/Location</th>
+      <th>Status</th>
+      <th>Comments</th>
+    </tr>
+    <tr><td>S01</td><td>Shared helpers</td><td>Playwright</td><td>tests/assignment2/assignment2.spec.ts</td><td>Complete</td><td>Reusable helper functions for opening pages and filling forms</td></tr>
+    <tr><td>S02</td><td>Search</td><td>Playwright</td><td>tests/assignment2/assignment2.spec.ts</td><td>Complete</td><td>6 search tests: valid, Enter, case-insensitive, no result, empty query, clear button</td></tr>
+    <tr><td>S03</td><td>Authentication</td><td>Playwright</td><td>tests/assignment2/assignment2.spec.ts</td><td>Complete</td><td>6 auth tests: login, validation, invalid password, logout, relogin</td></tr>
+    <tr><td>S04</td><td>Flight Booking</td><td>Playwright</td><td>tests/assignment2/assignment2.spec.ts</td><td>Complete</td><td>6 booking tests including title checkpoint and negative validation</td></tr>
+    <tr><td>S05</td><td>CI execution</td><td>GitHub Actions</td><td>.github/workflows/ci.yml</td><td>Complete</td><td>Installs dependencies, browser, runs tests, uploads report</td></tr>
+    <tr><td>S06</td><td>Evidence capture</td><td>Playwright + Node.js</td><td>scripts/capture-assignment2-screenshots.mjs</td><td>Complete</td><td>Captures local screenshots for report evidence</td></tr>
+  </table>
+
+  <h3>Step 4: Version Control Tracking</h3>
+  <table>
+    <tr>
+      <th>Commit ID / Hash</th>
+      <th>Date</th>
+      <th>Module/Feature</th>
+      <th>Description of Changes</th>
+      <th>Author</th>
+    </tr>
+    <tr><td>bde01a3</td><td>2026-03-22</td><td>Repository baseline</td><td>Initial QA environment and repository structure prepared</td><td>illus1um</td></tr>
+    <tr><td>a29094f</td><td>2026-03-22</td><td>Project refinement</td><td>Finalized previous repository adjustments used as starting point</td><td>illus1um</td></tr>
+    <tr><td>149df4e</td><td>2026-03-22</td><td>Documentation</td><td>Report updates committed to repository history</td><td>illus1um</td></tr>
+    <tr><td>13814a4</td><td>2026-03-22</td><td>Fixes</td><td>Stability fixes introduced in repository before Assignment 2 customization</td><td>illus1um</td></tr>
+    <tr><td>40d3670</td><td>2026-03-26</td><td>CI</td><td>CI-related repository update used as baseline for Assignment 2 workflow</td><td>illus1um</td></tr>
+    <tr><td>Not committed yet</td><td>2026-04-04</td><td>Assignment 2 suite</td><td>Playwright tests, local demo pages, CI workflow, screenshots, and final report prepared in local workspace</td><td>Aldiyar Sagidolla</td></tr>
+  </table>
+
+  <h3>Step 5: Evidence for Research Paper</h3>
+  <table>
+    <tr>
+      <th>Evidence ID</th>
+      <th>Module/Feature</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>File Location / Link</th>
+    </tr>
+    <tr><td>E01</td><td>Search</td><td>Screenshot</td><td>Successful search for selenium</td><td>screenshots/assignment2-search.png</td></tr>
+    <tr><td>E02</td><td>Authentication</td><td>Screenshot</td><td>Dashboard after successful login</td><td>screenshots/assignment2-login-dashboard.png</td></tr>
+    <tr><td>E03</td><td>Flight Booking</td><td>Screenshot</td><td>Booking confirmation after valid reservation</td><td>screenshots/assignment2-flight-booking.png</td></tr>
+    <tr><td>E04</td><td>Test execution</td><td>Log</td><td>Console output of complete Assignment 2 test run</td><td>screenshots/assignment2-test-run.log</td></tr>
+    <tr><td>E05</td><td>Reporting</td><td>Screenshot</td><td>Generated Playwright HTML report</td><td>screenshots/assignment2-playwright-report.png</td></tr>
+    <tr><td>E06</td><td>Automation source</td><td>Code</td><td>Main automated test suite file</td><td>tests/assignment2/assignment2.spec.ts</td></tr>
+  </table>
+
+  <div class="image">
+    <img src="../screenshots/assignment2-search.png" alt="Assignment 2 Search Screenshot">
+    <div class="caption">Figure 1. Search scenario evidence.</div>
+  </div>
+
+  <div class="image">
+    <img src="../screenshots/assignment2-login-dashboard.png" alt="Assignment 2 Login Screenshot">
+    <div class="caption">Figure 2. Dashboard after successful login.</div>
+  </div>
+
+  <div class="image">
+    <img src="../screenshots/assignment2-flight-booking.png" alt="Assignment 2 Flight Screenshot">
+    <div class="caption">Figure 3. Flight booking confirmation with title checkpoint.</div>
+  </div>
+
+  <div class="image">
+    <img src="../screenshots/assignment2-playwright-report.png" alt="Assignment 2 Playwright Report Screenshot">
+    <div class="caption">Figure 4. Playwright HTML report after execution.</div>
+  </div>
+
+  <h2>2. Quality Gate Definition &amp; Integration</h2>
+
+  <h3>Step 1: Define Pass/Fail Criteria</h3>
+  <table>
+    <tr>
+      <th>Quality Gate ID</th>
+      <th>Metric / Criterion</th>
+      <th>Threshold / Requirement</th>
+      <th>Importance</th>
+      <th>Notes</th>
+    </tr>
+    <tr><td>QG01</td><td>Automation coverage of selected high-risk functions</td><td>&ge; 90%</td><td>High</td><td>Current selected set is fully covered</td></tr>
+    <tr><td>QG02</td><td>Critical defects in final run</td><td>0 allowed</td><td>High</td><td>Any blocking flow failure should fail the suite</td></tr>
+    <tr><td>QG03</td><td>Total suite execution time</td><td>&le; 20 sec local run</td><td>Medium</td><td>Keeps suite suitable for CI feedback loops</td></tr>
+    <tr><td>QG04</td><td>Regression success for critical workflows</td><td>100%</td><td>High</td><td>Search, login, logout, and booking must pass</td></tr>
+    <tr><td>QG05</td><td>Locator diversity requirement</td><td>CSS and XPath both used</td><td>Medium</td><td>Explicitly required by assignment</td></tr>
+  </table>
+
+  <h3>Step 2: Integrate Tests into CI/CD Pipeline</h3>
+  <table>
+    <tr>
+      <th>Pipeline Step</th>
+      <th>Description</th>
+      <th>Tool / Framework</th>
+      <th>Trigger</th>
+      <th>Notes</th>
+    </tr>
+    <tr><td>Step 1</td><td>Checkout code</td><td>GitHub Actions</td><td>On push / PR</td><td>Ensures latest repository state is tested</td></tr>
+    <tr><td>Step 2</td><td>Install dependencies</td><td>npm ci</td><td>Automatic</td><td>Uses lockfile for repeatable environment</td></tr>
+    <tr><td>Step 3</td><td>Install Playwright browser</td><td>Playwright CLI</td><td>Automatic</td><td>Chromium installed for headless execution</td></tr>
+    <tr><td>Step 4</td><td>Run automated tests</td><td>Playwright</td><td>On push / PR</td><td>Runs Assignment 2 UI suite</td></tr>
+    <tr><td>Step 5</td><td>Upload test report</td><td>GitHub Actions artifact upload</td><td>Automatic</td><td>Retains Playwright report for investigation</td></tr>
+  </table>
+
+  <h3>Step 3: Alerting &amp; Failure Handling Procedures</h3>
+  <table>
+    <tr>
+      <th>Scenario / Event</th>
+      <th>Alert Type</th>
+      <th>Recipient / Channel</th>
+      <th>Action Required</th>
+      <th>Notes</th>
+    </tr>
+    <tr><td>Critical workflow test failure</td><td>GitHub Actions failed status</td><td>Student / repository owner</td><td>Inspect Playwright report, rerun suite, fix broken selector or app logic</td><td>Critical flows should block submission</td></tr>
+    <tr><td>Coverage below threshold</td><td>Manual review + report note</td><td>Student</td><td>Add missing automated scenario and rerun</td><td>Used for assignment quality gate review</td></tr>
+    <tr><td>Test execution timeout</td><td>Pipeline log failure</td><td>Student</td><td>Check environment, reduce flakiness, optimize waits</td><td>Long waits should be investigated</td></tr>
+    <tr><td>CI/CD pipeline configuration error</td><td>Failed workflow run</td><td>Student</td><td>Correct YAML configuration and rerun workflow</td><td>Usually related to setup or browser install</td></tr>
+  </table>
+
+  <h3>Step 4: CI/CD Pipeline Documentation</h3>
+  <p>The repository includes a GitHub Actions workflow in <strong>.github/workflows/ci.yml</strong>. The pipeline is triggered on push and pull request events, installs dependencies, installs Playwright Chromium, runs the test suite, and uploads the generated HTML report as an artifact.</p>
+
+  <h2>3. Metrics Collection</h2>
+
+  <h3>Step 1: Automation Coverage</h3>
+  <table>
+    <tr>
+      <th>Module/Feature</th>
+      <th>High-Risk Function</th>
+      <th>Test Automated? (Yes/No)</th>
+      <th>Coverage %</th>
+      <th>Notes</th>
+    </tr>
+    <tr><td>Search</td><td>Keyword search and validation paths</td><td>Yes</td><td>100%</td><td>Includes positive and negative coverage</td></tr>
+    <tr><td>Authentication</td><td>Login, validation, invalid credentials, logout</td><td>Yes</td><td>100%</td><td>Critical auth flow fully automated</td></tr>
+    <tr><td>Flight Booking</td><td>Reservation, validation, alternate routes, confirmation</td><td>Yes</td><td>100%</td><td>Includes title checkpoint and generated reference</td></tr>
+    <tr><td>CI execution</td><td>Automated pipeline run</td><td>Yes</td><td>100%</td><td>GitHub Actions workflow prepared</td></tr>
+  </table>
+  <p>Automation Coverage (%) = 4 automated high-risk feature groups / 4 selected high-risk feature groups × 100 = <strong>100%</strong>.</p>
+
+  <h3>Step 2: Track Execution Time (TTE)</h3>
+  <table>
+    <tr>
+      <th>Module/Feature</th>
+      <th>Number of Test Cases</th>
+      <th>Execution Time per Test Case (sec)</th>
+      <th>Total Execution Time (sec)</th>
+      <th>Notes</th>
+    </tr>
+    <tr><td>Search</td><td>6</td><td>0.55, 0.19, 0.23, 0.21, 0.24, 0.24</td><td>1.66</td><td>Fast deterministic DOM-based checks</td></tr>
+    <tr><td>Authentication</td><td>6</td><td>0.20, 0.22, 0.23, 0.19, 0.28, 0.30</td><td>1.42</td><td>Includes state reset and relogin flow</td></tr>
+    <tr><td>Flight Booking</td><td>6</td><td>0.24, 0.13, 0.23, 0.21, 0.25, 0.22</td><td>1.27</td><td>Confirmation and validation scenarios</td></tr>
+    <tr><td>Full Playwright suite</td><td>18</td><td>Aggregated</td><td>6.60</td><td>Observed from final local execution</td></tr>
+  </table>
+
+  <h3>Step 3: Track Defects Found vs Expected Risk</h3>
+  <table>
+    <tr>
+      <th>Module/Feature</th>
+      <th>High-Risk Level</th>
+      <th>Expected Defects</th>
+      <th>Defects Found</th>
+      <th>Pass/Fail</th>
+      <th>Notes</th>
+    </tr>
+    <tr><td>Search</td><td>High</td><td>2</td><td>0 open defects</td><td>Pass</td><td>Validation and clear-state behavior verified</td></tr>
+    <tr><td>Authentication</td><td>High</td><td>3</td><td>0 open defects</td><td>Pass</td><td>Valid login, invalid login, and logout are stable</td></tr>
+    <tr><td>Flight Booking</td><td>High</td><td>3</td><td>0 open defects</td><td>Pass</td><td>Booking confirmation and negative validation are covered</td></tr>
+    <tr><td>CI pipeline</td><td>Medium</td><td>1</td><td>0 open defects</td><td>Pass</td><td>Workflow file prepared and aligned with local run flow</td></tr>
+  </table>
+
+  <h3>Step 4: Maintain Detailed Logs</h3>
+  <table>
+    <tr>
+      <th>Test Case ID</th>
+      <th>Module/Feature</th>
+      <th>Execution Date/Time</th>
+      <th>Result</th>
+      <th>Defects Found</th>
+      <th>Execution Time (sec)</th>
+      <th>Notes</th>
+    </tr>
+    <tr><td>TC-01</td><td>Search</td><td>2026-04-04 19:06</td><td>Pass</td><td>0</td><td>0.55</td><td>Valid search via button</td></tr>
+    <tr><td>TC-02</td><td>Search</td><td>2026-04-04 19:06</td><td>Pass</td><td>0</td><td>0.19</td><td>Enter key search</td></tr>
+    <tr><td>TC-03</td><td>Search</td><td>2026-04-04 19:06</td><td>Pass</td><td>0</td><td>0.21</td><td>No-results scenario</td></tr>
+    <tr><td>TC-05</td><td>Authentication</td><td>2026-04-04 19:06</td><td>Pass</td><td>0</td><td>0.20</td><td>Valid login</td></tr>
+    <tr><td>TC-06</td><td>Authentication</td><td>2026-04-04 19:06</td><td>Pass</td><td>0</td><td>0.23</td><td>Invalid password</td></tr>
+    <tr><td>TC-08</td><td>Authentication</td><td>2026-04-04 19:06</td><td>Pass</td><td>0</td><td>0.28</td><td>Logout flow</td></tr>
+    <tr><td>TC-09</td><td>Flight Booking</td><td>2026-04-04 19:06</td><td>Pass</td><td>0</td><td>0.24</td><td>Successful reservation</td></tr>
+    <tr><td>TC-10</td><td>Flight Booking</td><td>2026-04-04 19:06</td><td>Pass</td><td>0</td><td>0.23</td><td>Missing passenger name validation</td></tr>
+    <tr><td>TC-11</td><td>Flight Booking</td><td>2026-04-04 19:06</td><td>Pass</td><td>0</td><td>0.21</td><td>Alternative route booking</td></tr>
+    <tr><td>TC-12</td><td>Flight Booking</td><td>2026-04-04 19:06</td><td>Pass</td><td>0</td><td>0.25</td><td>Booking reference generated successfully</td></tr>
+  </table>
+
+  <h3>Step 5: Metrics Reporting</h3>
+  <p>The final baseline for this assignment is: 18 automated Playwright tests, 100% coverage of selected high-risk web flows, 6.60 seconds total local execution time, and 0 open defects in the final run. The metrics are also supported by screenshots and a saved execution log.</p>
+
+  <h2>4. Documentation</h2>
+
+  <h3>Step 1: Automation Approach &amp; Tool Selection</h3>
+  <table>
+    <tr>
+      <th>Section</th>
+      <th>Details</th>
+    </tr>
+    <tr><td>Automation Approach</td><td>Risk-based browser automation focused on high-risk user workflows: search, authentication, and flight booking.</td></tr>
+    <tr><td>Tool Selection</td><td>Playwright was selected because it is stable for browser automation, supports modern locators, integrates well with CI, and produces useful HTML reports.</td></tr>
+    <tr><td>Scope</td><td>Local search demo, local login/logout demo, and local flight reservation demo were automated to provide stable, reproducible execution.</td></tr>
+    <tr><td>Reusability</td><td>The suite uses shared helper functions for navigation and form entry. Locators are structured consistently and the tests are grouped by feature.</td></tr>
+  </table>
+
+  <h3>Step 2: Quality Gate Definitions</h3>
+  <table>
+    <tr>
+      <th>Quality Gate ID</th>
+      <th>Metric / Criterion</th>
+      <th>Threshold</th>
+      <th>Observed Results</th>
+      <th>Notes</th>
+    </tr>
+    <tr><td>QG01</td><td>Automation coverage</td><td>&ge; 90%</td><td>100%</td><td>Passed</td></tr>
+    <tr><td>QG02</td><td>Critical defects</td><td>0</td><td>0</td><td>Passed</td></tr>
+    <tr><td>QG03</td><td>Total execution time</td><td>&le; 20 sec</td><td>6.60 sec</td><td>Passed</td></tr>
+    <tr><td>QG04</td><td>Regression success</td><td>100%</td><td>100%</td><td>Passed</td></tr>
+    <tr><td>QG05</td><td>CSS + XPath usage</td><td>Both required</td><td>Both used</td><td>Passed</td></tr>
+  </table>
+
+  <h3>Step 3: CI/CD Integration Overview</h3>
+  <table>
+    <tr>
+      <th>Pipeline Step</th>
+      <th>Tool / Framework</th>
+      <th>Trigger</th>
+      <th>Description</th>
+      <th>Screenshot / Diagram</th>
+    </tr>
+    <tr><td>Step 1</td><td>GitHub Actions</td><td>Push / PR</td><td>Checkout latest code</td><td>Workflow file in repository</td></tr>
+    <tr><td>Step 2</td><td>setup-node + npm ci</td><td>Automatic</td><td>Prepare Node.js environment and install dependencies</td><td>Reflected in CI YAML</td></tr>
+    <tr><td>Step 3</td><td>Playwright install</td><td>Automatic</td><td>Install Chromium for headless execution</td><td>Reflected in CI YAML</td></tr>
+    <tr><td>Step 4</td><td>Playwright</td><td>Push / PR</td><td>Execute Assignment 2 UI tests</td><td>Figure 4</td></tr>
+    <tr><td>Step 5</td><td>Artifact upload</td><td>On completion</td><td>Store HTML report for review</td><td>Figure 4</td></tr>
+  </table>
+
+  <h3>Step 4: Initial Results &amp; Coverage Metrics</h3>
+  <table>
+    <tr>
+      <th>Module/Feature</th>
+      <th>Automated?</th>
+      <th>Coverage %</th>
+      <th>Execution Time (sec)</th>
+      <th>Defects Found</th>
+      <th>Pass/Fail</th>
+    </tr>
+    <tr><td>Search</td><td>Yes</td><td>100%</td><td>1.66</td><td>0</td><td>Pass</td></tr>
+    <tr><td>Authentication</td><td>Yes</td><td>100%</td><td>1.42</td><td>0</td><td>Pass</td></tr>
+    <tr><td>Flight Booking</td><td>Yes</td><td>100%</td><td>1.27</td><td>0</td><td>Pass</td></tr>
+    <tr><td>CI pipeline integration</td><td>Yes</td><td>100%</td><td>N/A</td><td>0</td><td>Pass</td></tr>
+  </table>
+
+  <h3>Step 5: Evidence for Reproducibility</h3>
+  <table>
+    <tr>
+      <th>Evidence ID</th>
+      <th>Module/Feature</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>File Location / Link</th>
+    </tr>
+    <tr><td>E01</td><td>Search</td><td>Screenshot</td><td>Search result visible after valid query</td><td>screenshots/assignment2-search.png</td></tr>
+    <tr><td>E02</td><td>Authentication</td><td>Screenshot</td><td>Dashboard after valid login</td><td>screenshots/assignment2-login-dashboard.png</td></tr>
+    <tr><td>E03</td><td>Flight Booking</td><td>Screenshot</td><td>Booking confirmation visible</td><td>screenshots/assignment2-flight-booking.png</td></tr>
+    <tr><td>E04</td><td>Execution</td><td>Log</td><td>Saved console output from npm test</td><td>screenshots/assignment2-test-run.log</td></tr>
+    <tr><td>E05</td><td>Reporting</td><td>Screenshot</td><td>Playwright HTML report</td><td>screenshots/assignment2-playwright-report.png</td></tr>
+    <tr><td>E06</td><td>Code</td><td>Code</td><td>Main Playwright automation suite</td><td>tests/assignment2/assignment2.spec.ts</td></tr>
+  </table>
+
+  <h2>5. Deliverables Checklist</h2>
+  <table>
+    <tr>
+      <th>Deliverable</th>
+      <th>Description</th>
+      <th>File / Location</th>
+      <th>Status</th>
+      <th>Notes / Evidence</th>
+    </tr>
+    <tr><td>Automated Test Scripts</td><td>Scripts for critical modules including positive and negative scenarios</td><td>tests/assignment2/assignment2.spec.ts</td><td>Complete</td><td>18 Playwright tests</td></tr>
+    <tr><td>Updated QA Test Strategy Document</td><td>Assignment 2 final filled report</td><td>docs/Assignment2-Final-Report.docx</td><td>Complete</td><td>Contains all required tables and screenshots</td></tr>
+    <tr><td>Quality Gate Report</td><td>Defined pass/fail criteria and observed results</td><td>Embedded in final report</td><td>Complete</td><td>QG01-QG05 included</td></tr>
+    <tr><td>Metrics Report</td><td>Coverage, execution times, defects, and logs</td><td>Embedded in final report</td><td>Complete</td><td>Based on final local run</td></tr>
+    <tr><td>CI/CD Pipeline Evidence</td><td>Workflow steps and report evidence</td><td>.github/workflows/ci.yml and screenshots/assignment2-playwright-report.png</td><td>Complete</td><td>GitHub Actions workflow prepared</td></tr>
+    <tr><td>Evidence Folder</td><td>Screenshots and logs for reproducibility</td><td>screenshots/</td><td>Complete</td><td>Includes search, login, booking, report, and log files</td></tr>
+  </table>
+
+  <h2>Final Summary</h2>
+  <p>The Assignment 2 implementation is complete for the selected web automation scope. The final suite covers three critical user workflows, demonstrates both CSS selectors and XPath, includes negative and positive cases, runs successfully in 6.60 seconds locally, and is integrated into a CI workflow suitable for continuous verification.</p>
+  <p>The report also includes reproducibility evidence in the form of screenshots, execution logs, and direct references to the automation source files.</p>
+</body>
+</html>

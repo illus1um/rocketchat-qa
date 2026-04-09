@@ -1,12 +1,12 @@
 {
   "name": "rocketchat-qa",
-  "version": "1.0.0",
-  "description": "QA Test Suite for Rocket.Chat - Advanced QA Assignment 1",
+  "version": "2.0.0",
+  "description": "Assignment 2 UI automation suite with local demo apps",
   "scripts": {
-    "test:api": "jest tests/api/ --verbose",
+    "test": "playwright test",
     "test:e2e": "playwright test",
-    "test:postman": "node tests/postman/run-newman.js",
-    "test": "npm run test:api && npm run test:e2e"
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.0",
@@ -14,6 +14,12 @@
     "jest": "^29.7.0",
     "newman": "^6.1.0"
   },
-  "keywords": ["qa", "testing", "rocket.chat", "playwright", "jest"],
+  "keywords": [
+    "qa",
+    "testing",
+    "playwright",
+    "assignment-2",
+    "ui-automation"
+  ],
   "license": "MIT"
 }
