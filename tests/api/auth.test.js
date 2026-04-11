@@ -5,7 +5,7 @@ const API = `${BASE_URL}/api/v1`;
 
 // Admin credentials (set during Rocket.Chat setup wizard)
 const ADMIN_USER = process.env.RC_ADMIN_USER || 'admin';
-const ADMIN_PASS = process.env.RC_ADMIN_PASS || 'admin123';
+const ADMIN_PASS = process.env.RC_ADMIN_PASS || 'AdminPass123!@#';
 
 let authToken = '';
 let userId = '';

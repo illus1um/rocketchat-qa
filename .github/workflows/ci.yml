@@ -1,4 +1,4 @@
-name: Assignment 2 UI Tests
+name: Rocket.Chat QA Pipeline
 
 on:
   push:
@@ -7,12 +7,12 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: assignment2-ui-${{ github.workflow }}-${{ github.ref }}
+  group: qa-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  playwright:
-    name: Run Assignment 2 Tests
+  api-tests:
+    name: API Integration Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -29,34 +29,122 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+      - name: Start Rocket.Chat via Docker Compose
+        run: docker compose up -d
 
-      - name: Run UI tests
-        run: npm test
+      - name: Wait for Rocket.Chat to be ready
+        run: |
+          echo "Waiting for Rocket.Chat to start..."
+          for i in $(seq 1 90); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/info 2>/dev/null)
+            if [ "$STATUS" = "200" ]; then
+              echo "Rocket.Chat is ready after ~$((i * 3)) seconds"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "ERROR: Rocket.Chat failed to start within 270 seconds"
+          docker compose logs rocketchat | tail -50
+          exit 1
 
-      - name: Upload Playwright HTML report
+      - name: Verify admin login
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/v1/login \
+            -H "Content-Type: application/json" \
+            -d '{"user":"admin","password":"AdminPass123!@#"}')
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Admin login failed (HTTP $HTTP_CODE)"
+            docker compose logs rocketchat | tail -30
+            exit 1
+          fi
+          echo "Admin login OK"
+
+      - name: Run API tests with coverage
+        id: tests
+        run: |
+          npm run test:ci -- --json --outputFile=test-results.json 2>&1 | tee test-output.log
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+        env:
+          ROCKETCHAT_URL: http://localhost:3000
+          RC_ADMIN_USER: admin
+          RC_ADMIN_PASS: "AdminPass123!@#"
+
+      - name: Quality Gates
+        if: always() && steps.tests.outcome != 'skipped'
+        run: |
+          echo "========================================="
+          echo "       QUALITY GATE EVALUATION"
+          echo "========================================="
+
+          FAILED=0
+
+          if [ -f test-results.json ]; then
+            TOTAL=$(node -e "const r=require('./test-results.json'); console.log(r.numTotalTests)")
+            PASSED=$(node -e "const r=require('./test-results.json'); console.log(r.numPassedTests)")
+            FAILURES=$(node -e "const r=require('./test-results.json'); console.log(r.numFailedTests)")
+            SUITES_FAILED=$(node -e "const r=require('./test-results.json'); console.log(r.numFailedTestSuites)")
+
+            if [ "$TOTAL" -gt 0 ]; then
+              PASS_RATE=$(node -e "console.log(Math.round(($PASSED/$TOTAL)*100))")
+            else
+              PASS_RATE=0
+            fi
+
+            echo ""
+            echo "Results: $PASSED/$TOTAL passed, $FAILURES failed"
+            echo ""
+
+            # Gate 1: Test Pass Rate >= 90%
+            echo -n "Gate 1 — Pass Rate >= 90%: "
+            if [ "$PASS_RATE" -ge 90 ]; then
+              echo "PASSED ($PASS_RATE%)"
+            else
+              echo "FAILED ($PASS_RATE%)"
+              FAILED=1
+            fi
+
+            # Gate 2: Zero critical failures (auth + security tests must all pass)
+            echo -n "Gate 2 — Zero critical test failures: "
+            if [ "$FAILURES" -eq 0 ]; then
+              echo "PASSED (0 failures)"
+            else
+              echo "FAILED ($FAILURES failures)"
+              FAILED=1
+            fi
+
+            # Gate 3: All test suites must pass
+            echo -n "Gate 3 — All test suites pass: "
+            if [ "$SUITES_FAILED" -eq 0 ]; then
+              echo "PASSED"
+            else
+              echo "FAILED ($SUITES_FAILED suites failed)"
+              FAILED=1
+            fi
+          else
+            echo "No test results found — FAILED"
+            FAILED=1
+          fi
+
+          echo ""
+          echo "========================================="
+          if [ "$FAILED" -eq 1 ]; then
+            echo "  QUALITY GATES: FAILED"
+            echo "========================================="
+            exit 1
+          else
+            echo "  QUALITY GATES: ALL PASSED"
+            echo "========================================="
+          fi
+
+      - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: playwright-report
-          retention-days: 14
-
-      - name: Upload test results and traces
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: test-results
+          name: coverage-report
+          path: coverage/
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Upload JUnit report
+      - name: Stop Rocket.Chat
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: junit-report
-          path: test-results/junit/results.xml
-          if-no-files-found: warn
-          retention-days: 14
+        run: docker compose down -v

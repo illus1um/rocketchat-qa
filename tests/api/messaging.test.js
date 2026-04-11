@@ -4,7 +4,7 @@ const BASE_URL = process.env.ROCKETCHAT_URL || 'http://localhost:3000';
 const API = `${BASE_URL}/api/v1`;
 
 const ADMIN_USER = process.env.RC_ADMIN_USER || 'admin';
-const ADMIN_PASS = process.env.RC_ADMIN_PASS || 'admin123';
+const ADMIN_PASS = process.env.RC_ADMIN_PASS || 'AdminPass123!@#';
 
 let authToken = '';
 let userId = '';
