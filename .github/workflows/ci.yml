@@ -29,112 +29,112 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Start Rocket.Chat via Docker Compose
-        run: docker compose up -d
-
-      - name: Wait for Rocket.Chat to be ready
+      - name: Start Rocket.Chat stack
         run: |
-          echo "Waiting for Rocket.Chat to start..."
-          for i in $(seq 1 90); do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/info 2>/dev/null)
-            if [ "$STATUS" = "200" ]; then
-              echo "Rocket.Chat is ready after ~$((i * 3)) seconds"
-              exit 0
+          docker compose up -d
+          echo "Containers started:"
+          docker compose ps
+
+      - name: Wait for MongoDB to be healthy
+        run: |
+          echo "Waiting for MongoDB..."
+          for i in $(seq 1 60); do
+            if docker compose exec -T mongodb mongosh --quiet --eval "rs.status().ok" 2>/dev/null | grep -q "1"; then
+              echo "MongoDB replica set is ready"
+              break
+            fi
+            if [ "$i" = "60" ]; then
+              echo "MongoDB failed to become healthy"
+              docker compose logs mongodb
+              exit 1
             fi
             sleep 3
           done
-          echo "ERROR: Rocket.Chat failed to start within 270 seconds"
-          docker compose logs rocketchat | tail -50
+
+      - name: Wait for Rocket.Chat to be ready
+        run: |
+          echo "Waiting for Rocket.Chat API..."
+          for i in $(seq 1 120); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/info 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "Rocket.Chat is ready (attempt $i)"
+              exit 0
+            fi
+            if [ "$((i % 20))" = "0" ]; then
+              echo "Still waiting... (attempt $i, last status: $STATUS)"
+              docker compose ps
+            fi
+            sleep 3
+          done
+          echo "ERROR: Rocket.Chat failed to start within 360 seconds"
+          echo "=== Container status ==="
+          docker compose ps
+          echo "=== Rocket.Chat logs (last 80 lines) ==="
+          docker compose logs --tail=80 rocketchat
           exit 1
 
       - name: Verify admin login
         run: |
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/v1/login \
+          BODY=$(curl -s http://localhost:3000/api/v1/login \
             -H "Content-Type: application/json" \
             -d '{"user":"admin","password":"AdminPass123!@#"}')
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "Admin login failed (HTTP $HTTP_CODE)"
-            docker compose logs rocketchat | tail -30
+          SUCCESS=$(echo "$BODY" | node -e "process.stdin.on('data',d=>{try{console.log(JSON.parse(d).status)}catch(e){console.log('error')}})")
+          if [ "$SUCCESS" != "success" ]; then
+            echo "Admin login failed:"
+            echo "$BODY"
             exit 1
           fi
           echo "Admin login OK"
 
       - name: Run API tests with coverage
-        id: tests
-        run: |
-          npm run test:ci -- --json --outputFile=test-results.json 2>&1 | tee test-output.log
-          echo "exit_code=$?" >> $GITHUB_OUTPUT
+        run: npm run test:ci -- --json --outputFile=test-results.json
         env:
           ROCKETCHAT_URL: http://localhost:3000
           RC_ADMIN_USER: admin
           RC_ADMIN_PASS: "AdminPass123!@#"
 
       - name: Quality Gates
-        if: always() && steps.tests.outcome != 'skipped'
+        if: always()
         run: |
           echo "========================================="
           echo "       QUALITY GATE EVALUATION"
           echo "========================================="
 
+          if [ ! -f test-results.json ]; then
+            echo "No test results found — FAILED"
+            exit 1
+          fi
+
+          TOTAL=$(node -e "const r=require('./test-results.json'); console.log(r.numTotalTests)")
+          PASSED=$(node -e "const r=require('./test-results.json'); console.log(r.numPassedTests)")
+          FAILURES=$(node -e "const r=require('./test-results.json'); console.log(r.numFailedTests)")
+          SUITES_FAILED=$(node -e "const r=require('./test-results.json'); console.log(r.numFailedTestSuites)")
+          PASS_RATE=$(node -e "console.log(Math.round(($PASSED/$TOTAL)*100))")
+
+          echo ""
+          echo "Results: $PASSED/$TOTAL passed, $FAILURES failed"
+          echo ""
+
           FAILED=0
 
-          if [ -f test-results.json ]; then
-            TOTAL=$(node -e "const r=require('./test-results.json'); console.log(r.numTotalTests)")
-            PASSED=$(node -e "const r=require('./test-results.json'); console.log(r.numPassedTests)")
-            FAILURES=$(node -e "const r=require('./test-results.json'); console.log(r.numFailedTests)")
-            SUITES_FAILED=$(node -e "const r=require('./test-results.json'); console.log(r.numFailedTestSuites)")
+          echo -n "Gate 1 — Pass Rate >= 90%: "
+          if [ "$PASS_RATE" -ge 90 ]; then echo "PASSED ($PASS_RATE%)"; else echo "FAILED ($PASS_RATE%)"; FAILED=1; fi
 
-            if [ "$TOTAL" -gt 0 ]; then
-              PASS_RATE=$(node -e "console.log(Math.round(($PASSED/$TOTAL)*100))")
-            else
-              PASS_RATE=0
-            fi
+          echo -n "Gate 2 — Zero critical failures: "
+          if [ "$FAILURES" -eq 0 ]; then echo "PASSED"; else echo "FAILED ($FAILURES failures)"; FAILED=1; fi
 
-            echo ""
-            echo "Results: $PASSED/$TOTAL passed, $FAILURES failed"
-            echo ""
-
-            # Gate 1: Test Pass Rate >= 90%
-            echo -n "Gate 1 — Pass Rate >= 90%: "
-            if [ "$PASS_RATE" -ge 90 ]; then
-              echo "PASSED ($PASS_RATE%)"
-            else
-              echo "FAILED ($PASS_RATE%)"
-              FAILED=1
-            fi
-
-            # Gate 2: Zero critical failures (auth + security tests must all pass)
-            echo -n "Gate 2 — Zero critical test failures: "
-            if [ "$FAILURES" -eq 0 ]; then
-              echo "PASSED (0 failures)"
-            else
-              echo "FAILED ($FAILURES failures)"
-              FAILED=1
-            fi
-
-            # Gate 3: All test suites must pass
-            echo -n "Gate 3 — All test suites pass: "
-            if [ "$SUITES_FAILED" -eq 0 ]; then
-              echo "PASSED"
-            else
-              echo "FAILED ($SUITES_FAILED suites failed)"
-              FAILED=1
-            fi
-          else
-            echo "No test results found — FAILED"
-            FAILED=1
-          fi
+          echo -n "Gate 3 — All test suites pass: "
+          if [ "$SUITES_FAILED" -eq 0 ]; then echo "PASSED"; else echo "FAILED ($SUITES_FAILED failed)"; FAILED=1; fi
 
           echo ""
           echo "========================================="
           if [ "$FAILED" -eq 1 ]; then
             echo "  QUALITY GATES: FAILED"
-            echo "========================================="
             exit 1
           else
             echo "  QUALITY GATES: ALL PASSED"
-            echo "========================================="
           fi
+          echo "========================================="
 
       - name: Upload coverage report
         if: always()
