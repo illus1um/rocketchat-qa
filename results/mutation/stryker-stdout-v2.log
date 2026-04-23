@@ -1,0 +1,421 @@
+[32m20:11:57 (16460) INFO ProjectReader[39m Found 4 of 118 file(s) to be mutated.
+[32m20:11:57 (16460) INFO Instrumenter[39m Instrumented 4 source file(s) with 198 mutant(s)
+[32m20:11:57 (16460) INFO ConcurrencyTokenProvider[39m Creating 2 test runner process(es).
+[32m20:11:57 (16460) INFO BroadcastReporter[39m Detected that current console does not support the "progress" reporter, downgrading to "progress-append-only" reporter
+[32m20:11:58 (16460) INFO DryRunExecutor[39m Starting initial test run (jest test runner with "perTest" coverage analysis). This may take a while.
+[32m20:11:59 (16460) INFO DryRunExecutor[39m Initial test run succeeded. Ran 52 tests in 0 seconds (net 153 ms, overhead 686 ms).
+Mutation testing 43% (elapsed: <1m, remaining: <1m) 60/198 tested (8 survived, 1 timed out)
+Mutation testing 58% (elapsed: <1m, remaining: <1m) 120/198 tested (18 survived, 1 timed out)
+Mutation testing 75% (elapsed: <1m, remaining: <1m) 174/198 tested (28 survived, 1 timed out)
+Mutation testing 98% (elapsed: <1m, remaining: n/a) 197/198 tested (31 survived, 1 timed out)
+Mutation testing 98% (elapsed: <1m, remaining: n/a) 197/198 tested (31 survived, 1 timed out)
+
+All tests/rocketchat-client.test.js
+  ✓ validateCredentials accepts valid username and password [line 41] (killed 11)
+  ✓ validateCredentials rejects empty username [line 45] (killed 5)
+  ~ validateCredentials rejects empty password [line 49] (covered 15)
+  ✓ validateCredentials rejects non-string username [line 53] (killed 2)
+  ~ validateCredentials rejects non-string password [line 57] (covered 15)
+  ✓ validateCredentials rejects username longer than MAX_USERNAME_LENGTH [line 61] (killed 4)
+  ✓ validateCredentials accepts username exactly MAX_USERNAME_LENGTH [line 66] (killed 1)
+  ✓ validateChannelName accepts valid channel name [line 73] (killed 6)
+  ✓ validateChannelName rejects empty name [line 77] (killed 1)
+  ✓ validateChannelName rejects name with spaces [line 81] (killed 5)
+  ~ validateChannelName rejects name with special chars [line 85] (covered 22)
+  ✓ validateChannelName rejects name exceeding MAX_CHANNEL_NAME_LENGTH [line 89] (killed 3)
+  ✓ validateChannelName accepts name exactly MAX_CHANNEL_NAME_LENGTH [line 93] (killed 1)
+  ✓ validateMessage accepts valid message [line 99] (killed 7)
+  ✓ validateMessage rejects empty roomId [line 103] (killed 3)
+  ✓ validateMessage rejects empty message text [line 107] (killed 3)
+  ✓ validateMessage rejects non-string text [line 111] (killed 3)
+  ✓ validateMessage rejects message exceeding MAX_MESSAGE_LENGTH [line 115] (killed 3)
+  ✓ validateMessage accepts message at exactly MAX_MESSAGE_LENGTH [line 120] (killed 1)
+  ✓ buildAuthHeaders returns X-Auth-Token and X-User-Id [line 127] (killed 6)
+  ✓ buildAuthHeaders throws when session is null [line 132] (killed 5)
+  ✓ buildAuthHeaders throws when authToken missing [line 136] (killed 1)
+  ~ buildAuthHeaders throws when userId missing [line 140] (covered 13)
+  ✓ isRetryableStatus 429 is retryable [line 146] (killed 6)
+  ✓ isRetryableStatus 500 is retryable [line 150] (killed 4)
+  ~ isRetryableStatus 503 is retryable [line 154] (covered 14)
+  ✓ isRetryableStatus 200 is not retryable [line 158] (killed 3)
+  ~ isRetryableStatus 400 is not retryable [line 162] (covered 11)
+  ~ isRetryableStatus 401 is not retryable [line 166] (covered 11)
+  ✓ isRetryableStatus 600 is not retryable (outside 5xx) [line 170] (killed 2)
+  ✓ withRetry returns value on first success [line 176] (killed 5)
+  ✓ withRetry retries on 503 and eventually succeeds [line 183] (killed 7)
+  ✓ withRetry does not retry on 400 [line 193] (killed 4)
+  ✓ withRetry gives up after retries exhausted [line 199] (killed 1)
+  ✓ normalizeError wraps axios error with response into ApiError [line 207] (killed 9)
+  ✓ normalizeError returns the original error when response absent [line 215] (killed 1)
+  ~ normalizeError falls back to message when data.error missing [line 220] (covered 11)
+  ✓ RocketChatClient.login stores session on successful login [line 228] (killed 16)
+  ✓ RocketChatClient.login throws ApiError on 401 [line 241] (killed 5)
+  ~ RocketChatClient.login rejects empty credentials without calling http [line 254] (covered 22)
+  ✓ RocketChatClient.login throws ApiError when status field is not "success" [line 261] (killed 2)
+  ✓ RocketChatClient.logout clears session on successful logout [line 274] (killed 7)
+  ✓ RocketChatClient.logout no-op when not logged in [line 285] (killed 5)
+  ✓ RocketChatClient.createChannel sends auth headers and returns channel [line 295] (killed 5)
+  ~ RocketChatClient.createChannel rejects invalid channel name without calling http [line 309] (covered 30)
+  ~ RocketChatClient.createChannel rejects when not authenticated [line 317] (covered 37)
+  ✓ RocketChatClient.sendMessage sends message and returns stored record [line 325] (killed 6)
+  ~ RocketChatClient.sendMessage rejects empty message [line 338] (covered 30)
+  ~ RocketChatClient.sendMessage retries on 503 then succeeds [line 346] (covered 79)
+  ~ RocketChatClient.isAuthenticated false when no session [line 368] (covered 13)
+  ~ RocketChatClient.isAuthenticated true when session complete [line 373] (covered 13)
+  ~ RocketChatClient.isAuthenticated false when token missing [line 379] (covered 13)
+
+[Survived] StringLiteral
+lib/errors.js:6:17
+-       this.name = 'ValidationError';
++       this.name = "";
+Tests ran:
+    validateCredentials rejects empty username
+    validateCredentials rejects empty password
+    validateCredentials rejects non-string username
+  and 17 more tests!
+
+
+[Survived] StringLiteral
+lib/errors.js:14:17
+-       this.name = 'ApiError';
++       this.name = "";
+Tests ran:
+    normalizeError wraps axios error with response into ApiError
+    normalizeError falls back to message when data.error missing
+    RocketChatClient.login throws ApiError on 401
+  and 1 more test!
+
+
+[Survived] ConditionalExpression
+lib/retry.js:15:41
+-         if (!isRetryableStatus(status) || attempt === retries) {
++         if (!isRetryableStatus(status) || false) {
+Tests ran:
+    withRetry retries on 503 and eventually succeeds
+    withRetry gives up after retries exhausted
+    RocketChatClient.sendMessage retries on 503 then succeeds
+
+
+[Survived] ArithmeticOperator
+lib/retry.js:18:58
+-         await new Promise((resolve) => setTimeout(resolve, delayMs * (attempt + 1)));
++         await new Promise((resolve) => setTimeout(resolve, delayMs / (attempt + 1)));
+Tests ran:
+    withRetry retries on 503 and eventually succeeds
+    withRetry gives up after retries exhausted
+    RocketChatClient.sendMessage retries on 503 then succeeds
+
+
+[Survived] ArithmeticOperator
+lib/retry.js:18:69
+-         await new Promise((resolve) => setTimeout(resolve, delayMs * (attempt + 1)));
++         await new Promise((resolve) => setTimeout(resolve, delayMs * (attempt - 1)));
+Tests ran:
+    withRetry retries on 503 and eventually succeeds
+    withRetry gives up after retries exhausted
+    RocketChatClient.sendMessage retries on 503 then succeeds
+
+
+[NoCoverage] ObjectLiteral
+lib/rocketchat-client.js:23:44
+-       this.http = httpClient || axios.create({ baseURL: this.baseUrl, timeout: 10000 });
++       this.http = httpClient || axios.create({});
+
+[NoCoverage] BlockStatement
+lib/rocketchat-client.js:56:21
+-       } catch (error) {
+-         throw normalizeError(error);
+-       }
++       } catch (error) {}
+
+[NoCoverage] BlockStatement
+lib/rocketchat-client.js:71:21
+-       } catch (error) {
+-         throw normalizeError(error);
+-       }
++       } catch (error) {}
+
+[NoCoverage] BlockStatement
+lib/rocketchat-client.js:88:21
+-       } catch (error) {
+-         throw normalizeError(error);
+-       }
++       } catch (error) {}
+
+[Survived] Regex
+lib/rocketchat-client.js:22:36
+-       this.baseUrl = baseUrl.replace(/\/+$/, '');
++       this.baseUrl = baseUrl.replace(/\/+/, '');
+Tests ran:
+    RocketChatClient.login stores session on successful login
+    RocketChatClient.login throws ApiError on 401
+    RocketChatClient.login rejects empty credentials without calling http
+  and 12 more tests!
+
+
+[Survived] Regex
+lib/rocketchat-client.js:22:36
+-       this.baseUrl = baseUrl.replace(/\/+$/, '');
++       this.baseUrl = baseUrl.replace(/\/$/, '');
+Tests ran:
+    RocketChatClient.login stores session on successful login
+    RocketChatClient.login throws ApiError on 401
+    RocketChatClient.login rejects empty credentials without calling http
+  and 12 more tests!
+
+
+[Survived] StringLiteral
+lib/rocketchat-client.js:22:44
+-       this.baseUrl = baseUrl.replace(/\/+$/, '');
++       this.baseUrl = baseUrl.replace(/\/+$/, "Stryker was here!");
+Tests ran:
+    RocketChatClient.login stores session on successful login
+    RocketChatClient.login throws ApiError on 401
+    RocketChatClient.login rejects empty credentials without calling http
+  and 12 more tests!
+
+
+[Survived] ObjectLiteral
+lib/rocketchat-client.js:31:41
+-           this.http.post('/api/v1/login', { user: username, password }),
++           this.http.post('/api/v1/login', {}),
+Tests ran:
+    RocketChatClient.login stores session on successful login
+    RocketChatClient.login throws ApiError on 401
+    RocketChatClient.login throws ApiError when status field is not "success"
+
+
+[Survived] LogicalOperator
+lib/rocketchat-client.js:34:11
+-         if (!data || data.status !== 'success' || !data.data) {
++         if ((!data || data.status !== 'success') && !data.data) {
+Tests ran:
+    RocketChatClient.login stores session on successful login
+    RocketChatClient.login throws ApiError when status field is not "success"
+
+
+[Survived] ConditionalExpression
+lib/rocketchat-client.js:34:11
+-         if (!data || data.status !== 'success' || !data.data) {
++         if (false || !data.data) {
+Tests ran:
+    RocketChatClient.login stores session on successful login
+    RocketChatClient.login throws ApiError when status field is not "success"
+
+
+[Survived] LogicalOperator
+lib/rocketchat-client.js:34:11
+-         if (!data || data.status !== 'success' || !data.data) {
++         if (!data && data.status !== 'success' || !data.data) {
+Tests ran:
+    RocketChatClient.login stores session on successful login
+    RocketChatClient.login throws ApiError when status field is not "success"
+
+
+[Survived] ConditionalExpression
+lib/rocketchat-client.js:34:20
+-         if (!data || data.status !== 'success' || !data.data) {
++         if (!data || false || !data.data) {
+Tests ran:
+    RocketChatClient.login stores session on successful login
+    RocketChatClient.login throws ApiError when status field is not "success"
+
+
+[Survived] StringLiteral
+lib/rocketchat-client.js:35:28
+-           throw new ApiError('unexpected login response', response.status, data);
++           throw new ApiError("", response.status, data);
+Tests ran:
+    RocketChatClient.login throws ApiError when status field is not "success"
+
+
+[Survived] ObjectLiteral
+lib/rocketchat-client.js:53:50
+-         await this.http.post('/api/v1/logout', {}, { headers });
++         await this.http.post('/api/v1/logout', {}, {});
+Tests ran:
+    RocketChatClient.logout clears session on successful logout
+
+
+[Survived] BooleanLiteral
+lib/rocketchat-client.js:55:20
+-         return { ok: true, alreadyLoggedOut: false };
++         return { ok: false, alreadyLoggedOut: false };
+Tests ran:
+    RocketChatClient.logout clears session on successful logout
+
+
+[Survived] ObjectLiteral
+lib/rocketchat-client.js:84:11
+-             { headers },
++             {},
+Tests ran:
+    RocketChatClient.sendMessage sends message and returns stored record
+    RocketChatClient.sendMessage retries on 503 then succeeds
+
+
+[Survived] StringLiteral
+lib/rocketchat-client.js:18:26
+-   const DEFAULT_BASE_URL = 'http://localhost:3000';
++   const DEFAULT_BASE_URL = "";
+Ran all tests for this mutant.
+
+[NoCoverage] BlockStatement
+lib/validators.js:26:46
+-     if (password.length < MIN_PASSWORD_LENGTH) {
+-       throw new ValidationError('password too short', 'password');
+-     }
++     if (password.length < MIN_PASSWORD_LENGTH) {}
+
+[NoCoverage] StringLiteral
+lib/validators.js:27:31
+-       throw new ValidationError('password too short', 'password');
++       throw new ValidationError("", 'password');
+
+[NoCoverage] StringLiteral
+lib/validators.js:27:53
+-       throw new ValidationError('password too short', 'password');
++       throw new ValidationError('password too short', "");
+
+[Survived] StringLiteral
+lib/validators.js:13:31
+-       throw new ValidationError(`${field} must be a string`, field);
++       throw new ValidationError(``, field);
+Tests ran:
+    validateCredentials rejects non-string username
+    validateCredentials rejects non-string password
+
+
+[Survived] StringLiteral
+lib/validators.js:21:34
+-     assertNonEmptyString(username, 'username');
++     assertNonEmptyString(username, "");
+Tests ran:
+    validateCredentials accepts valid username and password
+    validateCredentials rejects empty username
+    validateCredentials rejects empty password
+  and 8 more tests!
+
+
+[Survived] StringLiteral
+lib/validators.js:22:34
+-     assertNonEmptyString(password, 'password');
++     assertNonEmptyString(password, "");
+Tests ran:
+    validateCredentials accepts valid username and password
+    validateCredentials rejects empty password
+    validateCredentials rejects non-string password
+  and 5 more tests!
+
+
+[Survived] StringLiteral
+lib/validators.js:24:52
+-       throw new ValidationError('username too long', 'username');
++       throw new ValidationError('username too long', "");
+Tests ran:
+    validateCredentials rejects username longer than MAX_USERNAME_LENGTH
+
+
+[Survived] ConditionalExpression
+lib/validators.js:26:7
+-     if (password.length < MIN_PASSWORD_LENGTH) {
++     if (false) {
+Tests ran:
+    validateCredentials accepts valid username and password
+    validateCredentials accepts username exactly MAX_USERNAME_LENGTH
+    RocketChatClient.login stores session on successful login
+  and 2 more tests!
+
+
+[Survived] EqualityOperator
+lib/validators.js:26:7
+-     if (password.length < MIN_PASSWORD_LENGTH) {
++     if (password.length <= MIN_PASSWORD_LENGTH) {
+Tests ran:
+    validateCredentials accepts valid username and password
+    validateCredentials accepts username exactly MAX_USERNAME_LENGTH
+    RocketChatClient.login stores session on successful login
+  and 2 more tests!
+
+
+[Survived] StringLiteral
+lib/validators.js:32:30
+-     assertNonEmptyString(name, 'name');
++     assertNonEmptyString(name, "");
+Tests ran:
+    validateChannelName accepts valid channel name
+    validateChannelName rejects empty name
+    validateChannelName rejects name with spaces
+  and 6 more tests!
+
+
+[Survived] StringLiteral
+lib/validators.js:34:56
+-       throw new ValidationError('channel name too long', 'name');
++       throw new ValidationError('channel name too long', "");
+Tests ran:
+    validateChannelName rejects name exceeding MAX_CHANNEL_NAME_LENGTH
+
+
+[Survived] StringLiteral
+lib/validators.js:37:75
+-       throw new ValidationError('channel name contains invalid characters', 'name');
++       throw new ValidationError('channel name contains invalid characters', "");
+Tests ran:
+    validateChannelName rejects name with spaces
+    validateChannelName rejects name with special chars
+    RocketChatClient.createChannel rejects invalid channel name without calling http
+
+
+[Survived] StringLiteral
+lib/validators.js:44:56
+-       throw new ValidationError('text must be a string', 'text');
++       throw new ValidationError('text must be a string', "");
+Tests ran:
+    validateMessage rejects non-string text
+
+
+[Survived] StringLiteral
+lib/validators.js:47:57
+-       throw new ValidationError('text must not be empty', 'text');
++       throw new ValidationError('text must not be empty', "");
+Tests ran:
+    validateMessage rejects empty message text
+    RocketChatClient.sendMessage rejects empty message
+
+
+[Survived] StringLiteral
+lib/validators.js:50:58
+-       throw new ValidationError('text exceeds max length', 'text');
++       throw new ValidationError('text exceeds max length', "");
+Tests ran:
+    validateMessage rejects message exceeding MAX_MESSAGE_LENGTH
+
+
+[Survived] StringLiteral
+lib/validators.js:56:50
+-       throw new ValidationError('missing session', 'session');
++       throw new ValidationError('missing session', "");
+Tests ran:
+    buildAuthHeaders throws when session is null
+    buildAuthHeaders throws when authToken missing
+    buildAuthHeaders throws when userId missing
+  and 1 more test!
+
+
+Ran 8.21 tests per mutant on average.
+----------------------|------------------|----------|-----------|------------|----------|----------|
+                      | % Mutation score |          |           |            |          |          |
+File                  |  total | covered | # killed | # timeout | # survived | # no cov | # errors |
+----------------------|--------|---------|----------|-----------|------------|----------|----------|
+All files             |  80.81 |   83.77 |      159 |         1 |         31 |        7 |        0 |
+ errors.js            |  85.71 |   85.71 |       12 |         0 |          2 |        0 |        0 |
+ retry.js             |  91.67 |   91.67 |       32 |         1 |          3 |        0 |        0 |
+ rocketchat-client.js |  73.44 |   78.33 |       47 |         0 |         13 |        4 |        0 |
+ validators.js        |  80.95 |   83.95 |       68 |         0 |         13 |        3 |        0 |
+----------------------|--------|---------|----------|-----------|------------|----------|----------|
+[32m20:12:52 (16460) INFO DashboardReporter[39m The report was not send to the dashboard. The dashboard.project and/or dashboard.version values were missing and not detected to be running on a build server.
+[32m20:12:52 (16460) INFO MutationTestReportHelper[39m Final mutation score of 80.81 is greater than or equal to break threshold 75
+[32m20:12:52 (16460) INFO JsonReporter[39m Your report can be found at: file:///C:/projects/rocketchat-qa/results/mutation/mutation-report.json
+[32m20:12:52 (16460) INFO HtmlReporter[39m Your report can be found at: file:///C:/projects/rocketchat-qa/results/mutation/mutation-report.html
+[32m20:12:52 (16460) INFO MutationTestExecutor[39m Done in 55 seconds.

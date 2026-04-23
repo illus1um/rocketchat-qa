@@ -31,5 +31,16 @@
     "p95_latency_ms": 593,
     "first_failure_ts": null,
     "first_recovery_ts": null
+  },
+  "packet-loss": {
+    "total": 49,
+    "ok": 46,
+    "failed": 3,
+    "availability_pct": 93.88,
+    "mttr_ms": 14989,
+    "mean_latency_ms": 29.26,
+    "p95_latency_ms": 12,
+    "first_failure_ts": "2026-04-23T15:32:40.219Z",
+    "first_recovery_ts": "2026-04-23T15:32:55.208Z"
   }
 }

@@ -4,7 +4,7 @@
       "suite": "mutation",
       "name": "score >= 75%",
       "status": "pass",
-      "detail": "score=80.51% (killed=156 survived=31 timeout=1 noCov=7 / total=195)"
+      "detail": "score=80.81% (killed=159 survived=31 timeout=1 noCov=7 / total=198)"
     },
     {
       "suite": "k6",
@@ -31,6 +31,12 @@
       "detail": "p95=127.77ms (limit 3000ms, ok); err=0.00% (limit 10.00%, ok)"
     },
     {
+      "suite": "k6",
+      "name": "endurance",
+      "status": "pass",
+      "detail": "p95=95.18ms (limit 800ms, ok); err=0.00% (limit 1.00%, ok)"
+    },
+    {
       "suite": "chaos",
       "name": "api-downtime",
       "status": "pass",
@@ -47,9 +53,15 @@
       "name": "network-latency",
       "status": "pass",
       "detail": "avail=100% (min 95%, ok)"
+    },
+    {
+      "suite": "chaos",
+      "name": "packet-loss",
+      "status": "pass",
+      "detail": "avail=93.88% (min 80%, ok); mttr=15.0s (max 60s, ok)"
     }
   ],
-  "passed": 8,
+  "passed": 10,
   "failed": 0,
   "skipped": 0
 }

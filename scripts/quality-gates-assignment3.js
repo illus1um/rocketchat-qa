@@ -40,8 +40,8 @@ const GATES = {
   },
   chaos: {
     // at least one scenario must complete and min availability must hold
-    availMin: { 'api-downtime': 30, 'db-outage': 70, 'network-latency': 95 },
-    mttrMaxSeconds: { 'api-downtime': 120, 'db-outage': 90 },
+    availMin: { 'api-downtime': 30, 'db-outage': 70, 'network-latency': 95, 'packet-loss': 80 },
+    mttrMaxSeconds: { 'api-downtime': 120, 'db-outage': 90, 'packet-loss': 60 },
   },
 };
 

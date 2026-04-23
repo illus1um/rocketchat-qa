@@ -1,0 +1,18 @@
+{
+  "rocketchat-qa-rocketchat-1": {
+    "samples": 159,
+    "cpu_mean_pct": 24.93,
+    "cpu_max_pct": 81.61,
+    "mem_mean_pct": 9.75,
+    "mem_max_pct": 10.08,
+    "mem_usage_last": "766.1MiB / 7.612GiB"
+  },
+  "rocketchat-qa-mongodb-1": {
+    "samples": 159,
+    "cpu_mean_pct": 18.04,
+    "cpu_max_pct": 59.2,
+    "mem_mean_pct": 4.81,
+    "mem_max_pct": 7.06,
+    "mem_usage_last": "375.2MiB / 7.612GiB"
+  }
+}

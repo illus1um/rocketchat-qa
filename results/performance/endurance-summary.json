@@ -1,0 +1,173 @@
+{
+    "metrics": {
+        "http_req_blocked": {
+            "avg": 0.014857598594087957,
+            "min": 0.000914,
+            "med": 0.0038095,
+            "max": 6.494146,
+            "p(90)": 0.009615800000000002,
+            "p(95)": 0.01231389999999999
+        },
+        "data_sent": {
+            "count": 1549489,
+            "rate": 5144.3183324633255
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 41.26708014744039,
+            "min": 5.446993,
+            "med": 31.1752995,
+            "max": 331.741356,
+            "p(90)": 81.29104630000002,
+            "p(95)": 95.17693799999994
+        },
+        "vus": {
+            "value": 3,
+            "min": 3,
+            "max": 10
+        },
+        "data_received": {
+            "count": 11203312,
+            "rate": 37195.103228165135
+        },
+        "iterations": {
+            "count": 2773,
+            "rate": 9.206386580298926
+        },
+        "http_req_waiting": {
+            "min": 5.346083,
+            "med": 31.086430999999997,
+            "max": 331.6144,
+            "p(90)": 81.14951230000001,
+            "p(95)": 95.02833769999994,
+            "avg": 41.10630300162217
+        },
+        "iteration_duration": {
+            "p(90)": 1114.6226262,
+            "p(95)": 1133.1683522,
+            "avg": 1083.4673899473516,
+            "min": 1031.026643,
+            "med": 1078.12659,
+            "max": 1412.62003,
+            "thresholds": {
+                "p(95)<2000": false
+            }
+        },
+        "http_reqs": {
+            "count": 5548,
+            "rate": 18.419413179768643
+        },
+        "http_req_receiving": {
+            "avg": 0.1402954113193945,
+            "min": 0.014943,
+            "med": 0.081341,
+            "max": 9.079068,
+            "p(90)": 0.25615050000000017,
+            "p(95)": 0.39825009999999994
+        },
+        "http_req_tls_handshaking": {
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0
+        },
+        "http_req_sending": {
+            "med": 0.013166,
+            "max": 0.670025,
+            "p(90)": 0.03688180000000001,
+            "p(95)": 0.056902949999999806,
+            "avg": 0.020481734498918512,
+            "min": 0.003623
+        },
+        "http_req_connecting": {
+            "p(95)": 0,
+            "avg": 0.008840715573179524,
+            "min": 0,
+            "med": 0,
+            "max": 5.874841,
+            "p(90)": 0
+        },
+        "checks": {
+            "passes": 5548,
+            "fails": 0,
+            "value": 1
+        },
+        "vus_max": {
+            "value": 10,
+            "min": 10,
+            "max": 10
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 5548,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_duration": {
+            "max": 331.741356,
+            "p(90)": 81.29104630000002,
+            "p(95)": 95.17693799999994,
+            "avg": 41.26708014744039,
+            "min": 5.446993,
+            "med": 31.1752995,
+            "thresholds": {
+                "p(95)<800": false
+            }
+        }
+    },
+    "setup_data": {
+        "roomId": "69ea3694b14e16ccaf782469",
+        "session": {
+            "authToken": "yLqCbWCO7IKpA32JY6hIVqbYQf_TmNi7mq7AsAZnavv",
+            "userId": "69d9df5e9a6d048a55ba1c18"
+        }
+    },
+    "root_group": {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "setup": {
+                "checks": {
+                    "login status 200": {
+                        "passes": 1,
+                        "fails": 0,
+                        "name": "login status 200",
+                        "path": "::setup::login status 200",
+                        "id": "17a4a3f3d5dbad586fefc48e40f4a9ab"
+                    },
+                    "login returned token": {
+                        "name": "login returned token",
+                        "path": "::setup::login returned token",
+                        "id": "9c891d721d521c8b89b1661b5e0b7ad7",
+                        "passes": 1,
+                        "fails": 0
+                    }
+                },
+                "name": "setup",
+                "path": "::setup",
+                "id": "5c0f8025f7e0b6654089e5b00e950f1a",
+                "groups": {}
+            }
+        },
+        "checks": {
+            "channels.list 200": {
+                "fails": 0,
+                "name": "channels.list 200",
+                "path": "::channels.list 200",
+                "id": "60b1edbab98ff670c713dee2de8e7297",
+                "passes": 2773
+            },
+            "sendMessage 200": {
+                "fails": 0,
+                "name": "sendMessage 200",
+                "path": "::sendMessage 200",
+                "id": "16225ada323723405dab6a231ed93138",
+                "passes": 2773
+            }
+        },
+        "name": "",
+        "path": ""
+    }
+}
