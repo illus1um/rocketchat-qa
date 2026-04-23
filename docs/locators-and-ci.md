@@ -28,3 +28,7 @@
 | Open Actions tab | Verify that the `Assignment 2 UI Tests` workflow appears |
 | Trigger run | Push to `main` or create a pull request |
 | Review result | Open the workflow run and inspect the uploaded `playwright-report` artifact |
+
+## Stability Note
+
+Because the Assignment 2 scenarios use repository-local demo apps, the locator strategy and CI behavior remain stable even when external sites or network conditions change.

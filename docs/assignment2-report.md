@@ -49,3 +49,7 @@
 | Predictable DOM structure | CSS and XPath selectors stay stable |
 | Easy CI execution | GitHub Actions can run the same way as local machine |
 | Faster grading demo | Instructor can run everything with one command |
+
+## Maintenance Note
+
+The Assignment 2 suite intentionally targets local demo pages in this repository. That keeps the scenarios reproducible during local runs, CI execution, and coursework review.
