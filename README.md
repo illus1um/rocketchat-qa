@@ -4,7 +4,7 @@
 
 ### *A Risk-Based, Automated, and Experimentally-Verified QA Pipeline for an Open-Source Communication Platform*
 
-[![Assignment 3 — Experimental Testing](https://github.com/illus1um/rocketchat-qa/actions/workflows/assignment3.yml/badge.svg)](https://github.com/illus1um/rocketchat-qa/actions/workflows/assignment3.yml)
+[![Assignment 3 - Experimental Testing](https://github.com/illus1um/rocketchat-qa/actions/workflows/assignment3.yml/badge.svg)](https://github.com/illus1um/rocketchat-qa/actions/workflows/assignment3.yml)
 [![Midterm CI](https://github.com/illus1um/rocketchat-qa/actions/workflows/ci.yml/badge.svg)](https://github.com/illus1um/rocketchat-qa/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Academic-blue.svg)](#)
 [![Node](https://img.shields.io/badge/node-20.x-339933?logo=node.js&logoColor=white)](https://nodejs.org)

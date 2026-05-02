@@ -6,6 +6,9 @@ const BASE_URL = process.env.ROCKETCHAT_URL || 'http://localhost:3000';
 const API = `${BASE_URL}/api/v1`;
 const SMOKE_CHANNEL = `qa-smoke-${Date.now()}`;
 
+// Test timeout configuration
+const TEST_TIMEOUT = 20000;
+
 async function login(page: Page) {
   await page.goto('/');
   await page.locator('input[name="usernameOrEmail"]').fill(ADMIN_USER);
@@ -41,7 +44,7 @@ test.describe('Channel Smoke', () => {
   test('should show created channel in sidebar', async ({ page }) => {
     await login(page);
     await page.reload();
-    await expect(page.locator(`text=${SMOKE_CHANNEL}`).first()).toBeVisible({ timeout: 20000 });
+    await expect(page.locator(`text=${SMOKE_CHANNEL}`).first()).toBeVisible({ timeout: TEST_TIMEOUT });
   });
 });
 
