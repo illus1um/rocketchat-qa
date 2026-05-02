@@ -14,6 +14,7 @@ stryker-tmp/
 .stryker-tmp/
 stryker.log
 reports/
-
+*.docx
 # Assignment 3 raw outputs are kept but logs can be regenerated
 results/mutation/stryker-stdout.log
+assignment3file.md
